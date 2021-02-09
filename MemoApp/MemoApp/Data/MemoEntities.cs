@@ -18,8 +18,7 @@ namespace MemoApp.Data
         public MemoEntities(DbContextOptions<MemoEntities> options)
             : base(options)
         {
-        }
-        
+        }       
         
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -31,7 +30,7 @@ namespace MemoApp.Data
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
+        { 
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");            
 
             modelBuilder.Entity<Memo>(entity =>
@@ -118,6 +117,21 @@ namespace MemoApp.Data
                     .HasForeignKey(d => d.MemoId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Tag_Memo");
+            });            
+
+            modelBuilder.Entity<AspNetUserLogin>(entity =>
+            {
+                entity.HasKey(e => new { e.LoginProvider, e.ProviderKey });                
+            });
+
+            modelBuilder.Entity<AspNetUserRole>(entity =>
+            {
+                entity.HasKey(e => new { e.UserId, e.RoleId });                
+            });
+
+            modelBuilder.Entity<AspNetUserToken>(entity =>
+            {
+                entity.HasKey(e => new { e.UserId, e.LoginProvider, e.Name });                
             });
 
             OnModelCreatingPartial(modelBuilder);
