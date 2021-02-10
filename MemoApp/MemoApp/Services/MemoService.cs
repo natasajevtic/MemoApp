@@ -2,6 +2,7 @@
 using MemoApp.Data;
 using Serilog;
 using System;
+using System.Linq;
 
 namespace MemoApp.Services
 {
@@ -20,6 +21,11 @@ namespace MemoApp.Services
             try
             {
                 _entities.Tags.AddRange(memo.Tags);
+
+                memo.CreatedAt = DateTime.Now;
+                memo.UpdatedAt = memo.CreatedAt;
+                memo.Status = _entities.Statuses.Where(s => s.Name == "Active").FirstOrDefault();
+
                 _entities.Memos.Add(memo);
 
                 if (Commit().Value)
