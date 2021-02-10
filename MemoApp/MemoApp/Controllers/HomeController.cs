@@ -19,7 +19,7 @@ namespace MemoApp.Controllers
         }
 
         public IActionResult Index()
-        {
+        {            
             return View();
         }
 

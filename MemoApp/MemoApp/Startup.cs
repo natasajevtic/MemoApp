@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 
 namespace MemoApp
 {
@@ -29,7 +30,7 @@ namespace MemoApp
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddTransient<DataSeeder>();
+            services.AddTransient<DataSeeder>();            
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -54,6 +55,8 @@ namespace MemoApp
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.UseSerilogRequestLogging();
 
             app.UseRouting();
 
