@@ -1,4 +1,5 @@
 using MemoApp.Data;
+using MemoApp.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using System.Reflection;
 
 namespace MemoApp
 {
@@ -30,7 +32,11 @@ namespace MemoApp
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddTransient<DataSeeder>();            
+            services.AddTransient<DataSeeder>();
+
+            services.AddScoped<IMemoService, MemoService>();
+
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 

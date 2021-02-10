@@ -14,7 +14,7 @@ namespace MemoApp.ViewModels
         public DateTime UpdatedAt { get; set; }      
         public string UserId { get; set; }
         public StatusViewModel Status { get; set; }
-        public ICollection<TagViewModel> TagCollection { get; set; }
-        public string Tags { get; set; }
+        public ICollection<TagViewModel> Tags { get; set; }
+        public string TagString { get; set; }
     }
 }
