@@ -8,5 +8,6 @@ namespace MemoApp.ViewModels
 
         [Required, MaxLength(50)]
         public string Name { get; set; }
+        public long MemoId { get; set; }
     }
 }

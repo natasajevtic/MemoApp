@@ -132,5 +132,47 @@ namespace MemoApp.Controllers
                 return RedirectToPage("/Error");
             }
         }
+
+        [HttpPost]
+        public IActionResult Edit(int id, MemoViewModel memoViewModel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    if (!String.IsNullOrWhiteSpace(memoViewModel.TagString))
+                    {
+                        memoViewModel.Tags = new List<TagViewModel>();
+                        var tagArray = memoViewModel.TagString.Split(' ');
+                        foreach (var tag in tagArray)
+                        {
+                            if (!String.IsNullOrWhiteSpace(tag))
+                            {
+                                var tagViewModel = new TagViewModel()
+                                {
+                                    Name = tag,
+                                    MemoId = id
+                                };
+                                memoViewModel.Tags.Add(tagViewModel);
+                            }
+                        }
+                    }
+                    var memoModel = _mapper.Map<MemoViewModel, Memo>(memoViewModel);
+                    var updatedModel = _memoService.UpdateMemo(memoModel);
+                    if (updatedModel.Succeeded)
+                    {
+                        var viewModel = _mapper.Map<Memo, MemoViewModel>(memoModel);
+                        return RedirectToAction("Details", new { id = viewModel.Id });
+                    }
+                    return RedirectToPage("/Error");
+                }
+                return View();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"{ex.GetBaseException().Message}");
+                return RedirectToPage("/Error");
+            }
+        }
     }
 }
