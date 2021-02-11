@@ -106,5 +106,31 @@ namespace MemoApp.Controllers
                 return RedirectToPage("/Error");
             }
         }
+
+        [HttpGet]
+        public IActionResult Edit(int? id)
+        {
+            try
+            {
+                if (!id.HasValue)
+                {
+                    return BadRequest();
+                }
+                var memoModel = _memoService.GetMemoById(id.Value).Value;
+                if (memoModel != null)
+                {
+                    var viewModel = _mapper.Map<Memo, MemoViewModel>(memoModel);
+                    viewModel.TagString = String.Join(' ', viewModel.Tags.Select(t => t.Name).ToArray());
+                    return View(viewModel);
+                }
+                return RedirectToPage("/NotFound");
+
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"{ex.GetBaseException().Message}");
+                return RedirectToPage("/Error");
+            }
+        }
     }
 }
