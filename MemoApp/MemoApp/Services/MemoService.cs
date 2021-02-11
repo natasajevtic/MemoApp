@@ -1,5 +1,6 @@
 ﻿using MemoApp.Common;
 using MemoApp.Data;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System;
 using System.Linq;
@@ -50,6 +51,23 @@ namespace MemoApp.Services
             catch (Exception ex)
             {                
                 Log.Error($"Failed to save changes to database: {ex.GetBaseException().Message}");
+            }
+            return result;
+        }
+
+        public IResult<Memo> GetMemoById(long id)
+        {
+            var result = new Result<Memo>();
+            try
+            {
+                result.Value = _entities.Memos.Where(m => m.Id == id)
+                    .Include(m => m.Tags)
+                    .Include(m => m.Status)
+                    .FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Failed to get memo by id {id}: {ex.GetBaseException().Message}");
             }
             return result;
         }

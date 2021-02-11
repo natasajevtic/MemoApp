@@ -5,6 +5,7 @@ namespace MemoApp.Services
 {
     public interface IMemoService
     {
-        IFeedback<long> AddMemo(Memo memo);        
+        IFeedback<long> AddMemo(Memo memo);
+        IResult<Memo> GetMemoById(long id);
     }
 }

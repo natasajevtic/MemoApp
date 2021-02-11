@@ -69,10 +69,10 @@ namespace MemoApp.Controllers
                     if (memoId > 0)
                     {
                         var viewModel = _mapper.Map<Memo, MemoViewModel>(memoModel);
-                        return View("Index");
+                        return RedirectToAction("Details", new { id = viewModel.Id });
                     }
 
-                    return View("Error");
+                    return RedirectToPage("Error");
                 }
 
                 return View();
@@ -80,7 +80,30 @@ namespace MemoApp.Controllers
             catch (Exception ex)
             {
                 Log.Error($"{ex.GetBaseException().Message}");
-                return View("Error");
+                return RedirectToPage("Error");
+            }
+        }
+
+        [HttpGet]
+        public IActionResult Details(int? id)
+        {
+            try
+            {
+                if (!id.HasValue)
+                {
+                    return BadRequest();
+                }
+                var memoModel = _memoService.GetMemoById(id.Value).Value;
+                if (memoModel != null)
+                {
+                    return View(_mapper.Map<Memo, MemoViewModel>(memoModel));
+                }
+                return RedirectToPage("NotFound");
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"{ex.GetBaseException().Message}");
+                return RedirectToPage("Error");
             }
         }
     }
