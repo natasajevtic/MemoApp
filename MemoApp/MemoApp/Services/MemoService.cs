@@ -100,5 +100,27 @@ namespace MemoApp.Services
             }
             return result;
         }
+
+        public IFeedback<bool> DeleteMemo(long id)
+        {
+            var result = new Feedback<bool>();
+            try
+            {
+                var memoToDelete = GetMemoById(id).Value;
+                if (memoToDelete != null)
+                {
+                    memoToDelete.Status = _entities.Statuses.Where(s => s.Name == "Deleted").FirstOrDefault();
+                    if (Commit().Value)
+                    {
+                        result.Value = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Failed to delete a memo by id {id}: {ex.GetBaseException().Message}");
+            }
+            return result;
+        }
     }
 }

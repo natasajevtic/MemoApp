@@ -85,7 +85,7 @@ namespace MemoApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult Details(int? id)
+        public IActionResult Details(long? id)
         {
             try
             {
@@ -108,7 +108,7 @@ namespace MemoApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public IActionResult Edit(long? id)
         {
             try
             {
@@ -134,7 +134,7 @@ namespace MemoApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(int id, MemoViewModel memoViewModel)
+        public IActionResult Edit(MemoViewModel memoViewModel)
         {
             try
             {
@@ -151,7 +151,7 @@ namespace MemoApp.Controllers
                                 var tagViewModel = new TagViewModel()
                                 {
                                     Name = tag,
-                                    MemoId = id
+                                    MemoId = memoViewModel.Id
                                 };
                                 memoViewModel.Tags.Add(tagViewModel);
                             }
@@ -173,6 +173,47 @@ namespace MemoApp.Controllers
                 Log.Error($"{ex.GetBaseException().Message}");
                 return RedirectToPage("/Error");
             }
+        }
+
+        [HttpGet]
+        public IActionResult Delete(long? id)
+        {
+            try
+            {
+                if (!id.HasValue)
+                {
+                    return BadRequest();
+                }
+                var memoModel = _memoService.GetMemoById(id.Value).Value;
+                if (memoModel != null)
+                {
+                    return View(_mapper.Map<Memo, MemoViewModel>(memoModel));
+                }
+                return RedirectToPage("/NotFound");
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"{ex.GetBaseException().Message}");
+                return RedirectToPage("/Error");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult Delete(long id)
+        {
+            try
+            {                
+                var isDeleted = _memoService.DeleteMemo(id);
+                if (isDeleted.Value == true)
+                {
+                    return RedirectToAction("Index");
+                }                
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"{ex.GetBaseException().Message}");
+            }
+            return RedirectToPage("/Error");
         }
     }
 }

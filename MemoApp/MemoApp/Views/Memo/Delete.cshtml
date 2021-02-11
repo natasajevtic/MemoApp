@@ -1,0 +1,15 @@
+﻿@model MemoViewModel
+@{
+    ViewData["Title"] = "Delete";
+}
+<div class="col-md-4 offset-md-4">
+    <div class="alert alert-danger">
+        Are you sure you want to delete a memo @Model.Title?
+    </div>
+    <form method="post">
+        <div class="form-group">
+            <button class="btn btn-danger" type="submit">Yes</button>
+            <a asp-controller="Memo" asp-action="Index" class="btn btn-success">Cancel</a>
+        </div>
+    </form>
+</div>
