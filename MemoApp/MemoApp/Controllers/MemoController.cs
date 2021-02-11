@@ -72,7 +72,7 @@ namespace MemoApp.Controllers
                         return RedirectToAction("Details", new { id = viewModel.Id });
                     }
 
-                    return RedirectToPage("Error");
+                    return RedirectToPage("/Error");
                 }
 
                 return View();
@@ -80,7 +80,7 @@ namespace MemoApp.Controllers
             catch (Exception ex)
             {
                 Log.Error($"{ex.GetBaseException().Message}");
-                return RedirectToPage("Error");
+                return RedirectToPage("/Error");
             }
         }
 
@@ -98,12 +98,12 @@ namespace MemoApp.Controllers
                 {
                     return View(_mapper.Map<Memo, MemoViewModel>(memoModel));
                 }
-                return RedirectToPage("NotFound");
+                return RedirectToPage("/NotFound");
             }
             catch (Exception ex)
             {
                 Log.Error($"{ex.GetBaseException().Message}");
-                return RedirectToPage("Error");
+                return RedirectToPage("/Error");
             }
         }
     }

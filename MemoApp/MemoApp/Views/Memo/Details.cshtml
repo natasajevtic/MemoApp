@@ -1,0 +1,46 @@
+﻿@model MemoViewModel
+@{
+    ViewData["Title"] = "Details";
+}
+<div class="row">
+    <div class="col-md-4 offset-md-4">
+        <form>
+            <fieldset disabled>
+                <div class="form-group">
+                    <label asp-for="Id">Id</label>
+                    <input asp-for="Id" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Title">Title</label>
+                    <input asp-for="Title" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Note">Note</label>
+                    <textarea asp-for="Note" class="form-control" rows="5"></textarea>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CreatedAt">Created at</label>
+                    <input asp-for="CreatedAt" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="UpdatedAt">Updated at</label>
+                    <input asp-for="UpdatedAt" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Status.Name">Status</label>
+                    <input asp-for="Status.Name" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Tags">Tags</label>
+                    <ul asp-for="Tags" class="list-inline">
+                        @foreach (var tag in Model.Tags)
+                        {
+                            <li class="badge badge-primary">@tag.Name</li>
+                        }
+                    </ul>
+                </div>
+            </fieldset>
+            <a asp-controller="Memo" asp-action="Index" class="btn btn-primary">Back to memos</a>
+        </form>
+    </div>
+</div>

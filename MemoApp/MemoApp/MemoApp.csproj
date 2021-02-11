@@ -3,11 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>aspnet-MemoApp-7F6C13C2-A5B9-4D90-A324-0BD81072D0B5</UserSecretsId>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <Content Remove="Pages\NotFound.cshtml" />
-  </ItemGroup>
+  </PropertyGroup>    
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
@@ -21,17 +17,6 @@
     <PackageReference Include="Serilog.Enrichers.Process" Version="2.0.1" />
     <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
   </ItemGroup>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Pages\NotFound.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="Pages\NotFound.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Pages\NotFound.cshtml" />
-  </ItemGroup>
+    
 
 </Project>
