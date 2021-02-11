@@ -7,5 +7,6 @@ namespace MemoApp.Services
     {
         IFeedback<long> AddMemo(Memo memo);
         IResult<Memo> GetMemoById(long id);
+        IResult<Memo> UpdateMemo(Memo memo);
     }
 }

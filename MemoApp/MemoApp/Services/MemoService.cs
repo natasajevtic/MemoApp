@@ -71,5 +71,34 @@ namespace MemoApp.Services
             }
             return result;
         }
+
+        public IResult<Memo> UpdateMemo(Memo memo)
+        {
+            var result = new Result<Memo>();
+            try
+            {
+                var memoToUpdate = GetMemoById(memo.Id).Value;
+                if (memoToUpdate != null)
+                {
+                    memoToUpdate.UpdatedAt = DateTime.Now;
+                    memoToUpdate.Note = memo.Note;
+                    memoToUpdate.Title = memo.Title;
+                    
+                    _entities.Tags.RemoveRange(memoToUpdate.Tags);
+                    _entities.Tags.AddRange(memo.Tags);
+
+                    if (Commit().Value)
+                    {
+                        result.Value = memoToUpdate;
+                        result.Succeeded = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Failed to update a memo by id {memo.Id}: {ex.GetBaseException().Message}");
+            }
+            return result;
+        }
     }
 }
