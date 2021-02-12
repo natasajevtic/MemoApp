@@ -3,6 +3,7 @@ using MemoApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace MemoApp.Services
@@ -119,6 +120,23 @@ namespace MemoApp.Services
             catch (Exception ex)
             {
                 Log.Error($"Failed to delete a memo by id {id}: {ex.GetBaseException().Message}");
+            }
+            return result;
+        }
+
+        public IResult<List<Memo>> GetMemos()
+        {
+            var result = new Result<List<Memo>>();
+            try
+            {
+                result.Value = _entities.Memos.Where(m => m.Status.Name == "Active")
+                    .Include(m => m.Tags)
+                    .Include(m => m.Status)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Failed to get all memos: {ex.GetBaseException().Message}");
             }
             return result;
         }

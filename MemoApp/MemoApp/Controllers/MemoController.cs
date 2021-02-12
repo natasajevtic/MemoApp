@@ -27,7 +27,16 @@ namespace MemoApp.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            try
+            {
+                var memoModelList = _memoService.GetMemos().Value;
+                return View(_mapper.Map<List<Memo>, List<MemoViewModel>>(memoModelList));
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"{ex.GetBaseException().Message}");
+                return RedirectToPage("/Error");
+            }            
         }
 
         public IActionResult Create()

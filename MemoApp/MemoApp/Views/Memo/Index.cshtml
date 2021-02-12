@@ -1,3 +1,62 @@
-﻿@{
+﻿@model List<MemoViewModel>
+@{
     ViewData["Title"] = "Memos";
+}
+
+<a class="btn btn-success btn-lg" id="buttonAddMemo" asp-controller="Memo" asp-action="Create">
+    <i class="fa fa-plus"></i> Add new
+</a>
+
+<table class="table table-light table-bordered table-hover table-striped" id="memoTable">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Title</th>
+            <th>Note</th>
+            <th>Tags</th>
+            <th>Created</th>
+            <th></th>
+        </tr>
+    </thead>
+    @foreach (var memo in Model)
+    {
+        <tr>
+            <td>@memo.UserId</td>
+            <td>@memo.Title</td>
+            <td>@memo.Note</td>
+            <td>
+                @foreach (var tag in memo.Tags)
+                {
+                    <span class="badge badge-primary">@tag.Name</span>
+                }
+            </td>
+            <td>@memo.CreatedAt</td>
+            <td>
+                <a class="btn btn-primary" asp-controller="Memo" asp-action="Edit" asp-route-id="@memo.Id">
+                    <i class="fa fa-edit" style="color:white"></i> Edit
+                </a>
+
+                <a class="btn btn-info" asp-controller="Memo" asp-action="Details" asp-route-id="@memo.Id">
+                    <i class="fa fa-search-plus" style="color:white"></i> Details
+                </a>
+
+                <a class="btn btn-danger" asp-controller="Memo" asp-action="Delete" asp-route-id="@memo.Id">
+                    <i class="fa fa-trash"></i> Delete
+                </a>
+            </td>
+        </tr>
+    }
+</table>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.23/css/dataTables.bootstrap4.min.css" />
+
+@section Scripts{
+
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#memoTable').DataTable();
+        });
+    </script>
 }
