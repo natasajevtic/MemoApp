@@ -30,6 +30,7 @@ namespace MemoApp
             {
                 var seed = scope.ServiceProvider.GetService<DataSeeder>();
                 seed.SeedStatusData();
+                seed.CreateRoles().Wait();
             }
         }
 
