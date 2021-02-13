@@ -66,10 +66,15 @@ body {
     margin-bottom: 5px;
 }
 
-table {
+#memoTable {
     table-layout: fixed;
+    width: 100%;
 }
 
-td {
-    word-wrap: break-word;
-}   
+    #memoTable td {
+        overflow: auto;
+    }
+
+.row-id {
+    width: 5%
+}     

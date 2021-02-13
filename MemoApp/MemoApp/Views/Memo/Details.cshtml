@@ -1,14 +1,16 @@
 ﻿@model MemoViewModel
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Memo details";
 }
-<div class="row">
-    <div class="col-md-4 offset-md-4">
-        <form>
-            <fieldset disabled>
+<form>
+    <fieldset disabled>
+        <h4>Details of the memo with id: @Model.Id</h4>
+        <hr />
+        <div class="row">
+            <div class="col-md-4 offset-md-2">
                 <div class="form-group">
-                    <label asp-for="Id">Id</label>
-                    <input asp-for="Id" class="form-control" />
+                    <label asp-for="UserId">User id</label>
+                    <input asp-for="UserId" class="form-control" />
                 </div>
                 <div class="form-group">
                     <label asp-for="Title">Title</label>
@@ -16,8 +18,10 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="Note">Note</label>
-                    <textarea asp-for="Note" class="form-control" rows="5"></textarea>
+                    <textarea asp-for="Note" class="form-control" rows="4"></textarea>
                 </div>
+            </div>
+            <div class="col-md-4">
                 <div class="form-group">
                     <label asp-for="CreatedAt">Created at</label>
                     <input asp-for="CreatedAt" class="form-control" />
@@ -35,12 +39,12 @@
                     <ul asp-for="Tags" class="list-inline">
                         @foreach (var tag in Model.Tags)
                         {
-                            <li class="badge badge-primary">@tag.Name</li>
+                            <li class="badge badge-dark">@tag.Name</li>
                         }
                     </ul>
                 </div>
-            </fieldset>
-            <a asp-controller="Memo" asp-action="Index" class="btn btn-primary">Back to memos</a>
-        </form>
-    </div>
-</div>
+            </div>
+        </div>
+    </fieldset>
+    <a asp-controller="Memo" asp-action="Index" class="btn btn-primary offset-md-2"><i class="fa fa-list"></i> Back to memos</a>
+</form>
