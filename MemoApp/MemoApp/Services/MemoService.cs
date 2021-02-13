@@ -40,7 +40,7 @@ namespace MemoApp.Services
                 Log.Error($"Failed to add a new memo: {ex.GetBaseException().Message}");
             }
             return feedback;
-        }        
+        }
 
         public IResult<bool> Commit()
         {
@@ -50,7 +50,7 @@ namespace MemoApp.Services
                 result.Value = _entities.SaveChanges() > 0;
             }
             catch (Exception ex)
-            {                
+            {
                 Log.Error($"Failed to save changes to database: {ex.GetBaseException().Message}");
             }
             return result;
@@ -84,7 +84,7 @@ namespace MemoApp.Services
                     memoToUpdate.UpdatedAt = DateTime.Now;
                     memoToUpdate.Note = memo.Note;
                     memoToUpdate.Title = memo.Title;
-                    
+
                     _entities.Tags.RemoveRange(memoToUpdate.Tags);
                     _entities.Tags.AddRange(memo.Tags);
 
@@ -124,7 +124,7 @@ namespace MemoApp.Services
             return result;
         }
 
-        public IResult<List<Memo>> GetMemos()
+        public IResult<List<Memo>> GetAllMemos()
         {
             var result = new Result<List<Memo>>();
             try
@@ -137,6 +137,40 @@ namespace MemoApp.Services
             catch (Exception ex)
             {
                 Log.Error($"Failed to get all memos: {ex.GetBaseException().Message}");
+            }
+            return result;
+        }
+
+        public IResult<List<Memo>> GetUserMemos(string userId)
+        {
+            var result = new Result<List<Memo>>();
+            try
+            {
+                result.Value = _entities.Memos.Where(m => m.Status.Name == "Active" && m.UserId == userId)
+                    .Include(m => m.Tags)
+                    .Include(m => m.Status)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Failed to get user {userId} memos: {ex.GetBaseException().Message}");
+            }
+            return result;
+        }
+
+        public IResult<Memo> GetUserMemoById(string userId, long memoId)
+        {
+            var result = new Result<Memo>();
+            try
+            {
+                result.Value = _entities.Memos.Where(m => m.Id == memoId && m.UserId == userId)
+                    .Include(m => m.Tags)
+                    .Include(m => m.Status)
+                    .FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Failed to get user {userId} memo by id {memoId}: {ex.GetBaseException().Message}");
             }
             return result;
         }

@@ -2,16 +2,19 @@
 using MemoApp.Data;
 using MemoApp.Services;
 using MemoApp.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace MemoApp.Controllers
 {
+    [Authorize]
     public class MemoController : Controller
     {
         private readonly IMemoService _memoService;
@@ -29,8 +32,17 @@ namespace MemoApp.Controllers
         {
             try
             {
-                var memoModelList = _memoService.GetMemos().Value;
-                return View(_mapper.Map<List<Memo>, List<MemoViewModel>>(memoModelList));
+                var memoModelList = new List<Memo>();
+                if (User.IsInRole("Admin"))
+                {
+                    memoModelList = _memoService.GetAllMemos().Value;
+                }
+                else
+                {
+                    var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    memoModelList = _memoService.GetUserMemos(id).Value;
+                }
+                return View(_mapper.Map<List<Data.Memo>, List<MemoViewModel>>(memoModelList));
             }
             catch (Exception ex)
             {
@@ -102,7 +114,17 @@ namespace MemoApp.Controllers
                 {
                     return BadRequest();
                 }
-                var memoModel = _memoService.GetMemoById(id.Value).Value;
+
+                var memoModel = new Memo();
+                if (User.IsInRole("Admin"))
+                {
+                    memoModel = _memoService.GetMemoById(id.Value).Value;
+                }
+                else
+                {
+                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    memoModel = _memoService.GetUserMemoById(userId, id.Value).Value;
+                }                
                 if (memoModel != null)
                 {
                     return View(_mapper.Map<Memo, MemoViewModel>(memoModel));
@@ -117,6 +139,7 @@ namespace MemoApp.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(long? id)
         {
             try
@@ -143,6 +166,7 @@ namespace MemoApp.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(MemoViewModel memoViewModel)
         {
             try
@@ -185,6 +209,7 @@ namespace MemoApp.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(long? id)
         {
             try
@@ -208,6 +233,7 @@ namespace MemoApp.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(long id)
         {
             try

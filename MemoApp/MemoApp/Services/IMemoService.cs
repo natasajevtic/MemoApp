@@ -8,7 +8,9 @@ namespace MemoApp.Services
     {
         IFeedback<long> AddMemo(Memo memo);
         IResult<Memo> GetMemoById(long id);
-        IResult<List<Memo>> GetMemos();
+        IResult<Memo> GetUserMemoById(string userId, long memoId);
+        IResult<List<Memo>> GetAllMemos();
+        IResult<List<Memo>> GetUserMemos(string userId);
         IResult<Memo> UpdateMemo(Memo memo);
         IFeedback<bool> DeleteMemo(long id);
     }
