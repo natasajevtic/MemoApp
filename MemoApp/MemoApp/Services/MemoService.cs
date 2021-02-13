@@ -1,4 +1,5 @@
 ﻿using MemoApp.Common;
+using MemoApp.Constants;
 using MemoApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -26,7 +27,7 @@ namespace MemoApp.Services
 
                 memo.CreatedAt = DateTime.Now;
                 memo.UpdatedAt = memo.CreatedAt;
-                memo.Status = _entities.Statuses.Where(s => s.Name == "Active").FirstOrDefault();
+                memo.Status = _entities.Statuses.Where(s => s.Name == Statuses.ActiveStatus).FirstOrDefault();
 
                 _entities.Memos.Add(memo);
 
@@ -37,7 +38,7 @@ namespace MemoApp.Services
             }
             catch (Exception ex)
             {
-                Log.Error($"Failed to add a new memo: {ex.GetBaseException().Message}");
+                Log.Error($"Failed to add a new memo: {ex.Message}");
             }
             return feedback;
         }
@@ -51,7 +52,7 @@ namespace MemoApp.Services
             }
             catch (Exception ex)
             {
-                Log.Error($"Failed to save changes to database: {ex.GetBaseException().Message}");
+                Log.Error($"Failed to save changes to database: {ex.Message}");
             }
             return result;
         }
@@ -61,14 +62,14 @@ namespace MemoApp.Services
             var result = new Result<Memo>();
             try
             {
-                result.Value = _entities.Memos.Where(m => m.Id == id)
+                result.Value = _entities.Memos.Where(m => m.Id == id && m.Status.Name == Statuses.ActiveStatus)
                     .Include(m => m.Tags)
                     .Include(m => m.Status)
                     .FirstOrDefault();
             }
             catch (Exception ex)
             {
-                Log.Error($"Failed to get memo by id {id}: {ex.GetBaseException().Message}");
+                Log.Error($"Failed to get memo by id {id}: {ex.Message}");
             }
             return result;
         }
@@ -97,7 +98,7 @@ namespace MemoApp.Services
             }
             catch (Exception ex)
             {
-                Log.Error($"Failed to update a memo by id {memo.Id}: {ex.GetBaseException().Message}");
+                Log.Error($"Failed to update a memo by id {memo.Id}: {ex.Message}");
             }
             return result;
         }
@@ -119,7 +120,7 @@ namespace MemoApp.Services
             }
             catch (Exception ex)
             {
-                Log.Error($"Failed to delete a memo by id {id}: {ex.GetBaseException().Message}");
+                Log.Error($"Failed to delete a memo by id {id}: {ex.Message}");
             }
             return result;
         }
@@ -129,14 +130,14 @@ namespace MemoApp.Services
             var result = new Result<List<Memo>>();
             try
             {
-                result.Value = _entities.Memos.Where(m => m.Status.Name == "Active")
+                result.Value = _entities.Memos.Where(m => m.Status.Name == Statuses.ActiveStatus)
                     .Include(m => m.Tags)
                     .Include(m => m.Status)
                     .ToList();
             }
             catch (Exception ex)
             {
-                Log.Error($"Failed to get all memos: {ex.GetBaseException().Message}");
+                Log.Error($"Failed to get all memos: {ex.Message}");
             }
             return result;
         }
@@ -146,14 +147,14 @@ namespace MemoApp.Services
             var result = new Result<List<Memo>>();
             try
             {
-                result.Value = _entities.Memos.Where(m => m.Status.Name == "Active" && m.UserId == userId)
+                result.Value = _entities.Memos.Where(m => m.Status.Name == Statuses.ActiveStatus && m.UserId == userId)
                     .Include(m => m.Tags)
                     .Include(m => m.Status)
                     .ToList();
             }
             catch (Exception ex)
             {
-                Log.Error($"Failed to get user {userId} memos: {ex.GetBaseException().Message}");
+                Log.Error($"Failed to get user {userId} memos: {ex.Message}");
             }
             return result;
         }
@@ -163,14 +164,14 @@ namespace MemoApp.Services
             var result = new Result<Memo>();
             try
             {
-                result.Value = _entities.Memos.Where(m => m.Id == memoId && m.UserId == userId)
+                result.Value = _entities.Memos.Where(m => m.Id == memoId && m.UserId == userId && m.Status.Name == Statuses.ActiveStatus)
                     .Include(m => m.Tags)
                     .Include(m => m.Status)
                     .FirstOrDefault();
             }
             catch (Exception ex)
             {
-                Log.Error($"Failed to get user {userId} memo by id {memoId}: {ex.GetBaseException().Message}");
+                Log.Error($"Failed to get user {userId} memo by id {memoId}: {ex.Message}");
             }
             return result;
         }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MemoApp.Constants;
 using MemoApp.Data;
 using MemoApp.Services;
 using MemoApp.ViewModels;
@@ -33,20 +34,22 @@ namespace MemoApp.Controllers
             try
             {
                 var memoModelList = new List<Memo>();
-                if (User.IsInRole("Admin"))
+                //if the user is an admin, getting memos of all users
+                if (User.IsInRole(Roles.AdminRole))
                 {
                     memoModelList = _memoService.GetAllMemos().Value;
                 }
+                //if the user is not admin, getting only his memos
                 else
                 {
                     var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
                     memoModelList = _memoService.GetUserMemos(id).Value;
                 }
-                return View(_mapper.Map<List<Data.Memo>, List<MemoViewModel>>(memoModelList));
+                return View(_mapper.Map<List<Memo>, List<MemoViewModel>>(memoModelList));
             }
             catch (Exception ex)
             {
-                Log.Error($"{ex.GetBaseException().Message}");
+                Log.Error($"{ex.Message}");
                 return RedirectToPage("/Error");
             }            
         }
@@ -63,6 +66,8 @@ namespace MemoApp.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    //if the user added memo tags, splitting that entry by a space, creating tags
+                    //and adding them to the collection
                     if (!String.IsNullOrWhiteSpace(memoViewModel.TagString))
                     {
                         memoViewModel.Tags = new List<TagViewModel>();
@@ -88,19 +93,16 @@ namespace MemoApp.Controllers
                     long memoId = _memoService.AddMemo(memoModel).Value;
 
                     if (memoId > 0)
-                    {
-                        var viewModel = _mapper.Map<Memo, MemoViewModel>(memoModel);
-                        return RedirectToAction("Details", new { id = viewModel.Id });
+                    {                        
+                        return RedirectToAction("Details", new { id = memoId });
                     }
-
                     return RedirectToPage("/Error");
                 }
-
                 return View();
             }
             catch (Exception ex)
             {
-                Log.Error($"{ex.GetBaseException().Message}");
+                Log.Error($"{ex.Message}");
                 return RedirectToPage("/Error");
             }
         }
@@ -116,7 +118,7 @@ namespace MemoApp.Controllers
                 }
 
                 var memoModel = new Memo();
-                if (User.IsInRole("Admin"))
+                if (User.IsInRole(Roles.AdminRole))
                 {
                     memoModel = _memoService.GetMemoById(id.Value).Value;
                 }
@@ -133,13 +135,13 @@ namespace MemoApp.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error($"{ex.GetBaseException().Message}");
+                Log.Error($"{ex.Message}");
                 return RedirectToPage("/Error");
             }
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.AdminRole)]
         public IActionResult Edit(long? id)
         {
             try
@@ -152,27 +154,29 @@ namespace MemoApp.Controllers
                 if (memoModel != null)
                 {
                     var viewModel = _mapper.Map<Memo, MemoViewModel>(memoModel);
+                    //creating a string of memo tags from the collection
                     viewModel.TagString = String.Join(' ', viewModel.Tags.Select(t => t.Name).ToArray());
                     return View(viewModel);
                 }
                 return RedirectToPage("/NotFound");
-
             }
             catch (Exception ex)
             {
-                Log.Error($"{ex.GetBaseException().Message}");
+                Log.Error($"{ex.Message}");
                 return RedirectToPage("/Error");
             }
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.AdminRole)]
         public IActionResult Edit(MemoViewModel memoViewModel)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
+                    //if the user added memo tags, splitting that entry by a space, creating tags
+                    //and adding them to the collection
                     if (!String.IsNullOrWhiteSpace(memoViewModel.TagString))
                     {
                         memoViewModel.Tags = new List<TagViewModel>();
@@ -193,9 +197,8 @@ namespace MemoApp.Controllers
                     var memoModel = _mapper.Map<MemoViewModel, Memo>(memoViewModel);
                     var updatedModel = _memoService.UpdateMemo(memoModel);
                     if (updatedModel.Succeeded)
-                    {
-                        var viewModel = _mapper.Map<Memo, MemoViewModel>(memoModel);
-                        return RedirectToAction("Details", new { id = viewModel.Id });
+                    {                        
+                        return RedirectToAction("Details", new { id = memoModel.Id });
                     }
                     return RedirectToPage("/Error");
                 }
@@ -203,13 +206,13 @@ namespace MemoApp.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error($"{ex.GetBaseException().Message}");
+                Log.Error($"{ex.Message}");
                 return RedirectToPage("/Error");
             }
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.AdminRole)]
         public IActionResult Delete(long? id)
         {
             try
@@ -227,13 +230,13 @@ namespace MemoApp.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error($"{ex.GetBaseException().Message}");
+                Log.Error($"{ex.Message}");
                 return RedirectToPage("/Error");
             }
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.AdminRole)]
         public IActionResult Delete(long id)
         {
             try
@@ -246,7 +249,7 @@ namespace MemoApp.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error($"{ex.GetBaseException().Message}");
+                Log.Error($"{ex.Message}");
             }
             return RedirectToPage("/Error");
         }
