@@ -90,10 +90,10 @@ namespace MemoApp.Controllers
                     var user = await _userManager.FindByNameAsync(User.Identity.Name);
                     memoModel.UserId = user.Id;
 
-                    long memoId = _memoService.AddMemo(memoModel).Value;
-
+                    var memoId = _memoService.AddMemo(memoModel).Value;
                     if (memoId > 0)
-                    {                        
+                    {
+                        TempData["Message"] = "The memo is saved!";
                         return RedirectToAction("Details", new { id = memoId });
                     }
                     return RedirectToPage("/Error");
@@ -197,7 +197,8 @@ namespace MemoApp.Controllers
                     var memoModel = _mapper.Map<MemoViewModel, Memo>(memoViewModel);
                     var updatedModel = _memoService.UpdateMemo(memoModel);
                     if (updatedModel.Succeeded)
-                    {                        
+                    {
+                        TempData["Message"] = "The memo is updated!";
                         return RedirectToAction("Details", new { id = memoModel.Id });
                     }
                     return RedirectToPage("/Error");
@@ -244,6 +245,7 @@ namespace MemoApp.Controllers
                 var isDeleted = _memoService.DeleteMemo(id);
                 if (isDeleted.Value == true)
                 {
+                    TempData["Message"] = "The memo with " + id + " is deleted!";
                     return RedirectToAction("Index");
                 }                
             }

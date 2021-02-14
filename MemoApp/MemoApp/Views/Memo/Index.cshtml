@@ -2,10 +2,17 @@
 @{
     ViewData["Title"] = "Memos";
 }
-
 <a class="btn btn-success btn-lg" id="buttonAddMemo" asp-controller="Memo" asp-action="Create">
     <i class="fa fa-plus"></i> Add new
 </a>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-dismissible alert-info float-right">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        @TempData["Message"]
+    </div>
+}
 
 <table class="table table-light table-bordered table-hover table-striped" id="memoTable">
     <thead>
@@ -22,33 +29,33 @@
     </thead>
     @foreach (var memo in Model)
     {
-    <tr>
-        <td>@memo.Id</td>
-        <td>@memo.UserId</td>
-        <td>@memo.Title</td>
-        <td>@memo.Note</td>
-        <td>
-            @foreach (var tag in memo.Tags)
+        <tr>
+            <td>@memo.Id</td>
+            <td>@memo.UserId</td>
+            <td>@memo.Title</td>
+            <td>@memo.Note</td>
+            <td>
+                @foreach (var tag in memo.Tags)
                 {
-            <span class="badge badge-primary">@tag.Name</span>
+                    <span class="badge badge-primary">@tag.Name</span>
                 }
-        </td>
-        <td>@memo.CreatedAt</td>
-        <td>
-            <a class="btn btn-light" asp-controller="Memo" asp-action="Details" asp-route-id="@memo.Id">
-                <i class="fa fa-search-plus"></i> Details
-            </a>
-            @if (User.IsInRole("Admin"))
+            </td>
+            <td>@memo.CreatedAt</td>
+            <td>
+                <a class="btn btn-light" asp-controller="Memo" asp-action="Details" asp-route-id="@memo.Id">
+                    <i class="fa fa-search-plus"></i> Details
+                </a>
+                @if (User.IsInRole("Admin"))
                 {
-            <a class="btn btn-warning" asp-controller="Memo" asp-action="Edit" asp-route-id="@memo.Id">
-                <i class="fa fa-edit"></i> Edit
-            </a>
-            <a class="btn btn-danger" asp-controller="Memo" asp-action="Delete" asp-route-id="@memo.Id">
-                <i class="fa fa-trash"></i> Delete
-            </a>
+                    <a class="btn btn-warning" asp-controller="Memo" asp-action="Edit" asp-route-id="@memo.Id">
+                        <i class="fa fa-edit"></i> Edit
+                    </a>
+                    <a class="btn btn-danger" asp-controller="Memo" asp-action="Delete" asp-route-id="@memo.Id">
+                        <i class="fa fa-trash"></i> Delete
+                    </a>
                 }
-        </td>
-    </tr>
+            </td>
+        </tr>
     }
 </table>
 
