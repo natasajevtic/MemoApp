@@ -34,11 +34,13 @@ namespace MemoApp.Services
                 if (Commit().Value)
                 {
                     feedback.Value = memo.Id;
+                    feedback.Status = StatusEnum.Succeeded;
                 }
             }
             catch (Exception ex)
             {
                 Log.Error($"Failed to add a new memo: {ex.Message}");
+                feedback.Status = StatusEnum.Error;
             }
             return feedback;
         }
@@ -86,8 +88,15 @@ namespace MemoApp.Services
                     memoToUpdate.Note = memo.Note;
                     memoToUpdate.Title = memo.Title;
 
-                    _entities.Tags.RemoveRange(memoToUpdate.Tags);
-                    _entities.Tags.AddRange(memo.Tags);
+                    var existingTags = memoToUpdate.Tags.Select(t => t.Name).OrderBy(t => t);
+                    var newTags = memo.Tags.Select(t => t.Name).OrderBy(t => t);
+
+                    //checking if collections do not contain the same tag names; whether tags are changed
+                    if (!existingTags.SequenceEqual(newTags))
+                    {
+                        _entities.Tags.RemoveRange(memoToUpdate.Tags);
+                        _entities.Tags.AddRange(memo.Tags);
+                    }
 
                     if (Commit().Value)
                     {
@@ -105,7 +114,7 @@ namespace MemoApp.Services
 
         public IFeedback<bool> DeleteMemo(long id)
         {
-            var result = new Feedback<bool>();
+            var feedback = new Feedback<bool>();
             try
             {
                 var memoToDelete = GetMemoById(id).Value;
@@ -114,15 +123,17 @@ namespace MemoApp.Services
                     memoToDelete.Status = _entities.Statuses.Where(s => s.Name == "Deleted").FirstOrDefault();
                     if (Commit().Value)
                     {
-                        result.Value = true;
+                        feedback.Value = true;
+                        feedback.Status = StatusEnum.Succeeded;
                     }
                 }
             }
             catch (Exception ex)
             {
                 Log.Error($"Failed to delete a memo by id {id}: {ex.Message}");
+                feedback.Status = StatusEnum.Error;
             }
-            return result;
+            return feedback;
         }
 
         public IResult<List<Memo>> GetAllMemos()
