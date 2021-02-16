@@ -77,8 +77,8 @@ namespace MemoApp.Data
                             await _userManager.AddToRoleAsync(admin, "Admin");
                             _entities.SaveChanges();
                             Log.Information("Admin role and user successfully added to the database.");
-                        }
-                    }
+                        }                        
+                    }                   
                 }
             }
             catch (Exception ex)
@@ -100,9 +100,12 @@ namespace MemoApp.Data
                     {
                         Name = "User"
                     };
-                    await _roleManager.CreateAsync(userRole);
-                    _entities.SaveChanges();
-                    Log.Information("User role successfully added to database.");
+                    var resultOfCreating = await _roleManager.CreateAsync(userRole);
+                    if (resultOfCreating.Succeeded)
+                    {
+                        _entities.SaveChanges();
+                        Log.Information("User role successfully added to database.");
+                    }                    
                 }
             }
             catch (Exception ex)

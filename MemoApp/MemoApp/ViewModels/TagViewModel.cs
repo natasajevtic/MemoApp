@@ -6,7 +6,7 @@ namespace MemoApp.ViewModels
     {
         public long Id { get; set; }
 
-        [Required, MaxLength(50)]
+        [MaxLength(50, ErrorMessage = "Tag length must be less than 50.")]
         public string Name { get; set; }
         public long MemoId { get; set; }
     }

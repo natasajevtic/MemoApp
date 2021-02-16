@@ -9,8 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace MemoApp.Controllers
@@ -29,7 +27,7 @@ namespace MemoApp.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             try
             {
@@ -42,8 +40,8 @@ namespace MemoApp.Controllers
                 //if the user is not admin, getting only his memos
                 else
                 {
-                    var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    memoModelList = _memoService.GetUserMemos(id).Value;
+                    var user = await _userManager.FindByNameAsync(User.Identity.Name);
+                    memoModelList = _memoService.GetUserMemos(user.Id).Value;
                 }
                 return View(_mapper.Map<List<Memo>, List<MemoViewModel>>(memoModelList));
             }
@@ -56,7 +54,8 @@ namespace MemoApp.Controllers
 
         public IActionResult Create()
         {
-            return View();
+            var memoViewModel = new MemoViewModel();
+            return View(memoViewModel);
         }
 
         [HttpPost]
@@ -66,25 +65,6 @@ namespace MemoApp.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    //if the user added memo tags, splitting that entry by a space, creating tags
-                    //and adding them to the collection
-                    if (!String.IsNullOrWhiteSpace(memoViewModel.TagString))
-                    {
-                        memoViewModel.Tags = new List<TagViewModel>();
-                        var tagArray = memoViewModel.TagString.Split(' ');
-                        foreach (var tag in tagArray)
-                        {
-                            if (!String.IsNullOrWhiteSpace(tag))
-                            {
-                                var tagViewModel = new TagViewModel()
-                                {
-                                    Name = tag
-                                };
-                                memoViewModel.Tags.Add(tagViewModel);
-                            }
-                        }
-                    }
-
                     var memoModel = _mapper.Map<MemoViewModel, Memo>(memoViewModel);
 
                     var user = await _userManager.FindByNameAsync(User.Identity.Name);
@@ -98,7 +78,7 @@ namespace MemoApp.Controllers
                     }
                     return RedirectToPage("/Error");
                 }
-                return View();
+                return View(memoViewModel);
             }
             catch (Exception ex)
             {
@@ -108,7 +88,7 @@ namespace MemoApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult Details(long? id)
+        public async Task<IActionResult> Details(long? id)
         {
             try
             {
@@ -124,8 +104,8 @@ namespace MemoApp.Controllers
                 }
                 else
                 {
-                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    memoModel = _memoService.GetUserMemoById(userId, id.Value).Value;
+                    var user = await _userManager.FindByNameAsync(User.Identity.Name);
+                    memoModel = _memoService.GetUserMemoById(user.Id, id.Value).Value;
                 }                
                 if (memoModel != null)
                 {
@@ -154,8 +134,6 @@ namespace MemoApp.Controllers
                 if (memoModel != null)
                 {
                     var viewModel = _mapper.Map<Memo, MemoViewModel>(memoModel);
-                    //creating a string of memo tags from the collection
-                    viewModel.TagString = String.Join(' ', viewModel.Tags.Select(t => t.Name).ToArray());
                     return View(viewModel);
                 }
                 return RedirectToPage("/NotFound");
@@ -174,26 +152,7 @@ namespace MemoApp.Controllers
             try
             {
                 if (ModelState.IsValid)
-                {
-                    //if the user added memo tags, splitting that entry by a space, creating tags
-                    //and adding them to the collection
-                    if (!String.IsNullOrWhiteSpace(memoViewModel.TagString))
-                    {
-                        memoViewModel.Tags = new List<TagViewModel>();
-                        var tagArray = memoViewModel.TagString.Split(' ');
-                        foreach (var tag in tagArray)
-                        {
-                            if (!String.IsNullOrWhiteSpace(tag))
-                            {
-                                var tagViewModel = new TagViewModel()
-                                {
-                                    Name = tag,
-                                    MemoId = memoViewModel.Id
-                                };
-                                memoViewModel.Tags.Add(tagViewModel);
-                            }
-                        }
-                    }
+                {                    
                     var memoModel = _mapper.Map<MemoViewModel, Memo>(memoViewModel);
                     var updatedModel = _memoService.UpdateMemo(memoModel);
                     if (updatedModel.Succeeded)
@@ -203,7 +162,7 @@ namespace MemoApp.Controllers
                     }
                     return RedirectToPage("/Error");
                 }
-                return View();
+                return View(memoViewModel);
             }
             catch (Exception ex)
             {
@@ -245,7 +204,7 @@ namespace MemoApp.Controllers
                 var isDeleted = _memoService.DeleteMemo(id);
                 if (isDeleted.Value == true)
                 {
-                    TempData["Message"] = "The memo with " + id + " is deleted!";
+                    TempData["Message"] = "The memo with id " + id + " is deleted!";
                     return RedirectToAction("Index");
                 }                
             }
