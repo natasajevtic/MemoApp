@@ -31,11 +31,9 @@ namespace MemoApp.Services
 
                 _entities.Memos.Add(memo);
 
-                if (Commit().Value)
-                {
-                    feedback.Value = memo.Id;
-                    feedback.Status = StatusEnum.Succeeded;
-                }
+                _entities.SaveChanges();
+                feedback.Value = memo.Id;
+                feedback.Status = StatusEnum.Succeeded;
             }
             catch (Exception ex)
             {
@@ -43,21 +41,7 @@ namespace MemoApp.Services
                 feedback.Status = StatusEnum.Error;
             }
             return feedback;
-        }
-
-        public IResult<bool> Commit()
-        {
-            var result = new Result<bool>();
-            try
-            {
-                result.Value = _entities.SaveChanges() > 0;
-            }
-            catch (Exception ex)
-            {
-                Log.Error($"Failed to save changes to database: {ex.Message}");
-            }
-            return result;
-        }
+        }        
 
         public IResult<Memo> GetMemoById(long id)
         {
@@ -98,11 +82,9 @@ namespace MemoApp.Services
                         _entities.Tags.AddRange(memo.Tags);
                     }
 
-                    if (Commit().Value)
-                    {
-                        result.Value = memoToUpdate;
-                        result.Succeeded = true;
-                    }
+                    _entities.SaveChanges();
+                    result.Value = memoToUpdate;
+                    result.Succeeded = true;
                 }
             }
             catch (Exception ex)
@@ -120,12 +102,10 @@ namespace MemoApp.Services
                 var memoToDelete = GetMemoById(id).Value;
                 if (memoToDelete != null)
                 {
-                    memoToDelete.Status = _entities.Statuses.Where(s => s.Name == "Deleted").FirstOrDefault();
-                    if (Commit().Value)
-                    {
-                        feedback.Value = true;
-                        feedback.Status = StatusEnum.Succeeded;
-                    }
+                    memoToDelete.Status = _entities.Statuses.Where(s => s.Name == Statuses.DeletedStatus).FirstOrDefault();
+                    _entities.SaveChanges();
+                    feedback.Value = true;
+                    feedback.Status = StatusEnum.Succeeded;
                 }
             }
             catch (Exception ex)
