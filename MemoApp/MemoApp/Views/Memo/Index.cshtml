@@ -6,14 +6,6 @@
     <i class="fa fa-plus"></i> Add new
 </a>
 
-@if (TempData["Message"] != null)
-{
-    <div class="alert alert-dismissible alert-info">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        @TempData["Message"]
-    </div>
-}
-
 <table class="table table-light table-bordered table-hover table-striped" id="memoTable">
     <thead>
         <tr>
@@ -24,39 +16,8 @@
             <th>Tags</th>
             <th>Created at</th>
             <th></th>
-
         </tr>
     </thead>
-    @foreach (var memo in Model)
-    {
-        <tr>
-            <td>@memo.Id</td>
-            <td>@memo.UserId</td>
-            <td>@memo.Title</td>
-            <td>@memo.Note</td>
-            <td>
-                @foreach (var tag in memo.Tags)
-                {
-                    <span class="badge badge-primary">@tag.Name</span>
-                }
-            </td>
-            <td>@memo.CreatedAt</td>
-            <td>
-                <a class="btn btn-light" asp-controller="Memo" asp-action="Details" asp-route-id="@memo.Id">
-                    <i class="fa fa-search-plus"></i> Details
-                </a>
-                @if (User.IsInRole("Admin"))
-                {
-                    <a class="btn btn-warning" asp-controller="Memo" asp-action="Edit" asp-route-id="@memo.Id">
-                        <i class="fa fa-edit"></i> Edit
-                    </a>
-                    <a class="btn btn-danger" asp-controller="Memo" asp-action="Delete" asp-route-id="@memo.Id">
-                        <i class="fa fa-trash"></i> Delete
-                    </a>
-                }
-            </td>
-        </tr>
-    }
 </table>
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.23/css/dataTables.bootstrap4.min.css" />
@@ -65,9 +26,56 @@
 
     <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.23/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/lib/bootbox/bootbox.min.js"></script>
     <script>
+        var datatable;
+        var role = @(User.IsInRole("Admin")? "true":"false");
+
         $(document).ready(function () {
-            $('#memoTable').DataTable();
-        });
+            $.ajax({
+                url: "/Memo/GetMemos",
+                method: "get",
+                success: function (response) {
+                    datatable = $("#memoTable").dataTable({
+                        data: response,
+                        columns: [
+                            { "data": "id" },
+                            { "data": "userId" },
+                            { "data": "title" },
+                            { "data": "note" },
+                            {
+                                "data": "tags",
+                                "render": function (data) {
+                                    var text = "";
+                                    $.each(data, function (i) {
+                                        text += "<span class='badge badge-primary'>" + data[i].name + "</span> ";
+                                    });
+                                    return text;
+                                }
+                            },
+                            { "data": "createdAt" },
+                            {
+                                "data": "id", "render": function (data) {
+                                    if (role) {
+                                        return "<div class='btn-group-vertical'><a class='btn btn-light'><i class='fa fa-search-plus'></i> Details</a>" +
+                                            "<a class='btn btn-warning'><i class='fa fa-edit'></i> Edit</a>" +
+                                            "<a class='btn btn-danger'><i class='fa fa-trash'></i> Delete</a><div>";
+                                    }
+                                    else {
+                                        return "<a class='btn btn-light'><i class='fa fa-search-plus'></i> Details</a>";
+                                    }
+                                }
+                            }
+                        ]
+                    })
+                },
+                error: function (xhr) {
+                    bootbox.alert({
+                        title: "Error: " + xhr.status,
+                        message: "Sorry, something went wrong. Please try later."
+                    });
+                }
+            })
+        })
     </script>
 }

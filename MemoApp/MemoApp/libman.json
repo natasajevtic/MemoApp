@@ -5,6 +5,10 @@
     {
       "library": "bootswatch@4.6.0",
       "destination": "wwwroot/lib/bootswatch/"
+    },
+    {
+      "library": "bootbox.js@5.3.2",
+      "destination": "wwwroot/lib/bootbox"
     }
   ]
 }

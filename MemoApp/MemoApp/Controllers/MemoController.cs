@@ -4,6 +4,7 @@ using MemoApp.Data;
 using MemoApp.Services;
 using MemoApp.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
@@ -27,7 +28,12 @@ namespace MemoApp.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> GetMemos()
         {
             try
             {
@@ -43,13 +49,13 @@ namespace MemoApp.Controllers
                     var user = await _userManager.FindByNameAsync(User.Identity.Name);
                     memoModelList = _memoService.GetUserMemos(user.Id).Value;
                 }
-                return View(_mapper.Map<List<Memo>, List<MemoViewModel>>(memoModelList));
+                return Json(_mapper.Map<List<Memo>, List<MemoViewModel>>(memoModelList));
             }
             catch (Exception ex)
             {
                 Log.Error($"{ex.Message}");
-                return RedirectToPage("/Error");
-            }            
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         public IActionResult Create()
@@ -106,7 +112,7 @@ namespace MemoApp.Controllers
                 {
                     var user = await _userManager.FindByNameAsync(User.Identity.Name);
                     memoModel = _memoService.GetUserMemoById(user.Id, id.Value).Value;
-                }                
+                }
                 if (memoModel != null)
                 {
                     return View(_mapper.Map<Memo, MemoViewModel>(memoModel));
@@ -152,7 +158,7 @@ namespace MemoApp.Controllers
             try
             {
                 if (ModelState.IsValid)
-                {                    
+                {
                     var memoModel = _mapper.Map<MemoViewModel, Memo>(memoViewModel);
                     var updatedModel = _memoService.UpdateMemo(memoModel);
                     if (updatedModel.Succeeded)
@@ -200,13 +206,13 @@ namespace MemoApp.Controllers
         public IActionResult Delete(long id)
         {
             try
-            {                
+            {
                 var isDeleted = _memoService.DeleteMemo(id);
                 if (isDeleted.Value == true)
                 {
                     TempData["Message"] = "The memo with id " + id + " is deleted!";
                     return RedirectToAction("Index");
-                }                
+                }
             }
             catch (Exception ex)
             {
