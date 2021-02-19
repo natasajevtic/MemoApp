@@ -78,10 +78,11 @@
                                     data + "')><i class='fa fa-search-plus'></i> Details</a>" +
                                     "<a class='btn btn-warning' onclick=showPopupForm('@Url.Action("Edit","Memo")/" +
                                     data + "')><i class='fa fa-edit'></i> Edit</a>" +
-                                    "<a class='btn btn-danger'><i class='fa fa-trash'></i> Delete</a><div>";
+                                    "<a class='btn btn-danger' onclick=deleteMemo(" + data + ")><i class='fa fa-trash'></i> Delete</a><div>";
                             }
                             else {
-                                return "<a class='btn btn-light'><i class='fa fa-search-plus'></i> Details</a>";
+                                return "<a class='btn btn-light' onclick=showPopupForm('@Url.Action("Details","Memo")/" +
+                                    data + "')><i class='fa fa-search-plus'></i> Details</a>";
                             }
                         }
                     }
@@ -138,6 +139,29 @@
                 });
             }
             return false;
+        }
+
+        function deleteMemo(id) {
+            bootbox.confirm("Are you sure you want to delete this memo?", function (result) {
+                if (result) {
+                    $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Delete","Memo")/' + id,
+                        success: function (data) {
+                            if (data.success) {
+                                bootbox.alert(data.message);
+                                datatable.ajax.reload();
+                            }
+                        },
+                        error: function (xhr) {
+                            bootbox.alert({
+                                title: "Error: " + xhr.status,
+                                message: "Sorry, something went wrong. Please try later.",
+                            });
+                        }
+                    })
+                }
+            })
         }
 
     </script>
