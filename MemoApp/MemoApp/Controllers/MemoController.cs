@@ -78,18 +78,17 @@ namespace MemoApp.Controllers
 
                     var memoId = _memoService.AddMemo(memoModel).Value;
                     if (memoId > 0)
-                    {
-                        TempData["Message"] = "The memo is saved!";
-                        return RedirectToAction("Details", new { id = memoId });
+                    {                        
+                        return Json(new { isValid = true, message = "The memo is saved!" });
                     }
-                    return RedirectToPage("/Error");
+                    return StatusCode(StatusCodes.Status500InternalServerError);
                 }
                 return View(memoViewModel);
             }
             catch (Exception ex)
             {
                 Log.Error($"{ex.Message}");
-                return RedirectToPage("/Error");
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -117,12 +116,12 @@ namespace MemoApp.Controllers
                 {
                     return View(_mapper.Map<Memo, MemoViewModel>(memoModel));
                 }
-                return RedirectToPage("/NotFound");
+                return NotFound();
             }
             catch (Exception ex)
             {
                 Log.Error($"{ex.Message}");
-                return RedirectToPage("/Error");
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -142,12 +141,12 @@ namespace MemoApp.Controllers
                     var viewModel = _mapper.Map<Memo, MemoViewModel>(memoModel);
                     return View(viewModel);
                 }
-                return RedirectToPage("/NotFound");
+                return NotFound();
             }
             catch (Exception ex)
             {
                 Log.Error($"{ex.Message}");
-                return RedirectToPage("/Error");
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -162,18 +161,17 @@ namespace MemoApp.Controllers
                     var memoModel = _mapper.Map<MemoViewModel, Memo>(memoViewModel);
                     var updatedModel = _memoService.UpdateMemo(memoModel);
                     if (updatedModel.Succeeded)
-                    {
-                        TempData["Message"] = "The memo is updated!";
-                        return RedirectToAction("Details", new { id = memoModel.Id });
+                    {                        
+                        return Json(new { isValid = true, message = "The memo is updated!" });
                     }
-                    return RedirectToPage("/Error");
+                    return StatusCode(StatusCodes.Status500InternalServerError);
                 }
                 return View(memoViewModel);
             }
             catch (Exception ex)
             {
                 Log.Error($"{ex.Message}");
-                return RedirectToPage("/Error");
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
