@@ -4,7 +4,7 @@
 }
 
 <div class="modal" role="dialog" id="modalAdd">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title"></h5>
@@ -17,9 +17,9 @@
     </div>
 </div>
 
-<a class="btn btn-success btn-lg" onclick="showPopupForm('@Url.Action("Create","Memo")', 'Add memo')">
+<button class="btn btn-success btn-lg" onclick="showPopupForm('@Url.Action("Create","Memo")', 'Add memo')">
     <i class="fa fa-plus"></i> Add new
-</a>
+</button>
 
 <table class="table table-light table-bordered table-hover table-striped" id="memoTable">
     <thead>
@@ -42,6 +42,7 @@
     <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.23/js/dataTables.bootstrap4.min.js"></script>
     <script src="~/lib/bootbox/bootbox.min.js"></script>
+    <script src="~/lib/moment/moment.min.js"></script>
     <script>
         var datatable;
         var role = @(User.IsInRole("Admin")? "true":"false");
@@ -69,20 +70,24 @@
                             return text;
                         }
                     },
-                    { "data": "createdAt" },
+                    {
+                        "data": "createdAt", "render": function (data) {
+                            return moment(data).format("MM/DD/YYYY HH:mm:ss");
+                        }
+                    },
                     {
                         "data": "id", "render": function (data) {
                             if (role) {
                                 return "<div class='btn-group-vertical'>" +
-                                    "<a class='btn btn-light' onclick=showPopupForm('@Url.Action("Details","Memo")/" +
-                                    data + "')><i class='fa fa-search-plus'></i> Details</a>" +
-                                    "<a class='btn btn-warning' onclick=showPopupForm('@Url.Action("Edit","Memo")/" +
-                                    data + "')><i class='fa fa-edit'></i> Edit</a>" +
-                                    "<a class='btn btn-danger' onclick=deleteMemo(" + data + ")><i class='fa fa-trash'></i> Delete</a><div>";
+                                    "<button class='btn btn-light' onclick=showPopupForm('@Url.Action("Details","Memo")/" +
+                                    data + "','Details')><i class='fa fa-search-plus'></i> Details</button>" +
+                                    "<button class='btn btn-warning' onclick=showPopupForm('@Url.Action("Edit","Memo")/" +
+                                    data + "','Edit')><i class='fa fa-edit'></i> Edit</button>" +
+                                    "<button class='btn btn-danger' onclick=deleteMemo(" + data + ")><i class='fa fa-trash'></i> Delete</button><div>";
                             }
                             else {
-                                return "<a class='btn btn-light' onclick=showPopupForm('@Url.Action("Details","Memo")/" +
-                                    data + "')><i class='fa fa-search-plus'></i> Details</a>";
+                                return "<button class='btn btn-light' onclick=showPopupForm('@Url.Action("Details","Memo")/" +
+                                    data + "','Details')><i class='fa fa-search-plus'></i> Details</button>";
                             }
                         }
                     }
@@ -90,34 +95,17 @@
             })
         })
 
-        function showPopupForm(url, title) {
-            $.ajax({
-                type: "GET",
-                url: url,
-                success: function (response) {
-                    $('#modalAdd .modal-body').html(response);
-                    $('#modalAdd .modal-title').html(title);
-                    $('#modalAdd').modal('show');
-                },
-                error: function (xhr) {
-                    bootbox.alert({
-                        title: "Error: " + xhr.status,
-                        message: xhr.statusText,
-                    });
-                }
-            })
-        }
-
-        function SubmitForm(form) {
-            $.validator.unobtrusive.parse(form);
-            if ($(form).valid()) {
+        function deleteMemo(id) {
+        bootbox.confirm({
+        title: "Confirmation",
+        message: "Are you sure you want to delete this memo?",
+        callback: function (result) {
+            if (result) {
                 $.ajax({
                     type: "POST",
-                    url: form.action,
-                    data: $(form).serialize(),
+                    url: '@Url.Action("Delete","Memo")/' + id,
                     success: function (data) {
-                        if (data.isValid) {
-                            $('#modalAdd').modal('hide');
+                        if (data.success) {
                             bootbox.alert(
                                 {
                                     title: "Notification",
@@ -125,44 +113,17 @@
                                 });
                             datatable.ajax.reload();
                         }
-                        else {
-                            $('#modalAdd .modal-body').html(data);
-                        }
                     },
                     error: function (xhr) {
-                        $('#modalAdd').modal('hide');
                         bootbox.alert({
                             title: "Error: " + xhr.status,
-                            message: "Sorry, something went wrong. Please try later.",
+                            message: getErrorMessage(xhr)
                         });
                     }
-                });
-            }
-            return false;
-        }
-
-        function deleteMemo(id) {
-            bootbox.confirm("Are you sure you want to delete this memo?", function (result) {
-                if (result) {
-                    $.ajax({
-                    type: "POST",
-                    url: '@Url.Action("Delete","Memo")/' + id,
-                        success: function (data) {
-                            if (data.success) {
-                                bootbox.alert(data.message);
-                                datatable.ajax.reload();
-                            }
-                        },
-                        error: function (xhr) {
-                            bootbox.alert({
-                                title: "Error: " + xhr.status,
-                                message: "Sorry, something went wrong. Please try later.",
-                            });
-                        }
-                    })
-                }
-            })
-        }
+                })
+            }}
+        })
+    }
 
     </script>
 }

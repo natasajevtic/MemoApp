@@ -2,7 +2,7 @@
 @{    
     Layout = null;
 }
-<form method="post" asp-controller="Memo" asp-action="Create" onsubmit="return SubmitForm(this)">
+<form method="post" asp-controller="Memo" asp-action="Create" onsubmit="return submitForm(this)">
     <div class="form-group">
         <label asp-for="Title">Title</label>
         <input asp-for="Title" class="form-control" />
@@ -23,7 +23,7 @@
     </div>
     <div class="form-group">
         <button type="submit" class="btn btn-success">Save</button>
-        <a data-dismiss="modal" class="btn btn-danger">Cancel</a>
+        <button data-dismiss="modal" class="btn btn-danger">Cancel</button>
     </div>
 </form>
 

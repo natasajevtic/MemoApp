@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MemoApp.Constants;
 using MemoApp.Data;
+using MemoApp.Helper;
 using MemoApp.Services;
 using MemoApp.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -58,6 +59,8 @@ namespace MemoApp.Controllers
             }
         }
 
+        [NoDirectAccess]
+        [HttpGet]
         public IActionResult Create()
         {
             var memoViewModel = new MemoViewModel();
@@ -92,6 +95,7 @@ namespace MemoApp.Controllers
             }
         }
 
+        [NoDirectAccess]
         [HttpGet]
         public async Task<IActionResult> Details(long? id)
         {
@@ -125,6 +129,7 @@ namespace MemoApp.Controllers
             }
         }
 
+        [NoDirectAccess]
         [HttpGet]
         [Authorize(Roles = Roles.AdminRole)]
         public IActionResult Edit(long? id)
@@ -191,7 +196,7 @@ namespace MemoApp.Controllers
             {
                 Log.Error(ex.Message);
             }
-            return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error");
+            return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
 }
