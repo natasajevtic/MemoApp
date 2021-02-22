@@ -1,39 +1,32 @@
 ﻿@model MemoViewModel
 @{
-    ViewData["Title"] = "Edit memo";
+    Layout = null;
 }
-<div class="row">
-    <div class="col-md-4 offset-md-4">
-        <form method="post">
-            <h4>Edit the memo with id: @Model.Id</h4>
-            <hr />
-            <input asp-for="Id" type="hidden" />
-            <div class="form-group">
-                <label asp-for="Title">Title</label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Note">Note</label>
-                <textarea asp-for="Note" class="form-control" rows="5"></textarea>
-                <span asp-validation-for="Note" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TagString">Tags</label>
-                <textarea asp-for="TagString" class="form-control" rows="2"></textarea>
-                @for (int i = 0; i < Model.Tags.Count; i++)
-                {
-                    <span asp-validation-for="Tags[i].Name" class="text-danger"></span>
-                }
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-success">Edit</button>
-                <a asp-controller="Memo" asp-action="index" class="btn btn-danger">Cancel</a>
-            </div>
-        </form>
-    </div>
-</div>
 
-@section Scripts {
-    <partial name="../Shared/_ValidationScriptsPartial" />
-}
+<form method="post" asp-controller="Memo" asp-action="Edit" onsubmit="return submitForm(this)">
+    <input asp-for="Id" type="hidden" />
+    <div class="form-group">
+        <label asp-for="Title">Title</label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Note">Note</label>
+        <textarea asp-for="Note" class="form-control" rows="5"></textarea>
+        <span asp-validation-for="Note" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="TagString">Tags</label>
+        <textarea asp-for="TagString" class="form-control" rows="2"></textarea>
+        @for (int i = 0; i < Model.Tags.Count; i++)
+        {
+            <span asp-validation-for="Tags[i].Name" class="text-danger"></span>
+        }
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-success">Save</button>
+        <button data-dismiss="modal" class="btn btn-danger">Cancel</button>
+    </div>
+</form>
+
+<partial name="../Shared/_ValidationScriptsPartial" />

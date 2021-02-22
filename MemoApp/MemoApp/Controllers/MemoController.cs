@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using MemoApp.Constants;
 using MemoApp.Data;
+using MemoApp.Helper;
 using MemoApp.Services;
 using MemoApp.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
@@ -27,7 +29,12 @@ namespace MemoApp.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> GetMemos()
         {
             try
             {
@@ -43,15 +50,17 @@ namespace MemoApp.Controllers
                     var user = await _userManager.FindByNameAsync(User.Identity.Name);
                     memoModelList = _memoService.GetUserMemos(user.Id).Value;
                 }
-                return View(_mapper.Map<List<Memo>, List<MemoViewModel>>(memoModelList));
+                return Json(_mapper.Map<List<Memo>, List<MemoViewModel>>(memoModelList));
             }
             catch (Exception ex)
             {
-                Log.Error($"{ex.Message}");
-                return RedirectToPage("/Error");
-            }            
+                Log.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
+        [NoDirectAccess]
+        [HttpGet]
         public IActionResult Create()
         {
             var memoViewModel = new MemoViewModel();
@@ -72,21 +81,21 @@ namespace MemoApp.Controllers
 
                     var memoId = _memoService.AddMemo(memoModel).Value;
                     if (memoId > 0)
-                    {
-                        TempData["Message"] = "The memo is saved!";
-                        return RedirectToAction("Details", new { id = memoId });
+                    {                        
+                        return Json(new { isValid = true, message = "The memo is saved!" });
                     }
-                    return RedirectToPage("/Error");
+                    return StatusCode(StatusCodes.Status500InternalServerError);
                 }
                 return View(memoViewModel);
             }
             catch (Exception ex)
             {
-                Log.Error($"{ex.Message}");
-                return RedirectToPage("/Error");
+                Log.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
+        [NoDirectAccess]
         [HttpGet]
         public async Task<IActionResult> Details(long? id)
         {
@@ -106,20 +115,21 @@ namespace MemoApp.Controllers
                 {
                     var user = await _userManager.FindByNameAsync(User.Identity.Name);
                     memoModel = _memoService.GetUserMemoById(user.Id, id.Value).Value;
-                }                
+                }
                 if (memoModel != null)
                 {
                     return View(_mapper.Map<Memo, MemoViewModel>(memoModel));
                 }
-                return RedirectToPage("/NotFound");
+                return NotFound();
             }
             catch (Exception ex)
             {
-                Log.Error($"{ex.Message}");
-                return RedirectToPage("/Error");
+                Log.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
+        [NoDirectAccess]
         [HttpGet]
         [Authorize(Roles = Roles.AdminRole)]
         public IActionResult Edit(long? id)
@@ -136,12 +146,12 @@ namespace MemoApp.Controllers
                     var viewModel = _mapper.Map<Memo, MemoViewModel>(memoModel);
                     return View(viewModel);
                 }
-                return RedirectToPage("/NotFound");
+                return NotFound();
             }
             catch (Exception ex)
             {
-                Log.Error($"{ex.Message}");
-                return RedirectToPage("/Error");
+                Log.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -152,67 +162,41 @@ namespace MemoApp.Controllers
             try
             {
                 if (ModelState.IsValid)
-                {                    
+                {
                     var memoModel = _mapper.Map<MemoViewModel, Memo>(memoViewModel);
                     var updatedModel = _memoService.UpdateMemo(memoModel);
                     if (updatedModel.Succeeded)
-                    {
-                        TempData["Message"] = "The memo is updated!";
-                        return RedirectToAction("Details", new { id = memoModel.Id });
+                    {                        
+                        return Json(new { isValid = true, message = "The memo is updated!" });
                     }
-                    return RedirectToPage("/Error");
+                    return StatusCode(StatusCodes.Status500InternalServerError);
                 }
                 return View(memoViewModel);
             }
             catch (Exception ex)
             {
-                Log.Error($"{ex.Message}");
-                return RedirectToPage("/Error");
+                Log.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
-        }
-
-        [HttpGet]
-        [Authorize(Roles = Roles.AdminRole)]
-        public IActionResult Delete(long? id)
-        {
-            try
-            {
-                if (!id.HasValue)
-                {
-                    return BadRequest();
-                }
-                var memoModel = _memoService.GetMemoById(id.Value).Value;
-                if (memoModel != null)
-                {
-                    return View(_mapper.Map<Memo, MemoViewModel>(memoModel));
-                }
-                return RedirectToPage("/NotFound");
-            }
-            catch (Exception ex)
-            {
-                Log.Error($"{ex.Message}");
-                return RedirectToPage("/Error");
-            }
-        }
+        }        
 
         [HttpPost]
         [Authorize(Roles = Roles.AdminRole)]
         public IActionResult Delete(long id)
         {
             try
-            {                
+            {
                 var isDeleted = _memoService.DeleteMemo(id);
                 if (isDeleted.Value == true)
                 {
-                    TempData["Message"] = "The memo with id " + id + " is deleted!";
-                    return RedirectToAction("Index");
-                }                
+                    return Json(new { success = true, message = "The memo is deleted." });
+                }
             }
             catch (Exception ex)
             {
-                Log.Error($"{ex.Message}");
+                Log.Error(ex.Message);
             }
-            return RedirectToPage("/Error");
+            return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
 }
