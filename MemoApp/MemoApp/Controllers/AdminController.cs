@@ -1,4 +1,5 @@
-﻿using MemoApp.ViewModels;
+﻿using MemoApp.Helper;
+using MemoApp.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -7,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MemoApp.Controllers
@@ -66,6 +68,72 @@ namespace MemoApp.Controllers
                     userRolesViewModel.Add(viewModel);
                 }
                 return Json(userRolesViewModel);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [NoDirectAccess]
+        [HttpGet]
+        public async Task<IActionResult> EditUserRole(string id)
+        {            
+            try
+            {
+                var user = await _userManager.FindByIdAsync(id);
+                if (user != null)
+                {
+                    var viewModelList = new List<EditUserRolesViewModel>();
+                    foreach (var role in _roleManager.Roles)
+                    {
+                        var viewModel = new EditUserRolesViewModel
+                        {
+                            RoleId = role.Id,
+                            RoleName = role.Name
+                        };
+                        if (await _userManager.IsInRoleAsync(user, role.Name))
+                        {
+                            viewModel.IsSelected = true;
+                        }
+                        else
+                        {
+                            viewModel.IsSelected = false;
+                        }
+                        viewModelList.Add(viewModel);
+                    }
+                    return View(viewModelList);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditUserRole(List<EditUserRolesViewModel> viewModel, string id)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(id);
+                var userRoles = await _userManager.GetRolesAsync(user);
+                var resultOfRemovingRoles = await _userManager.RemoveFromRolesAsync(user, userRoles);
+                if (!resultOfRemovingRoles.Succeeded)
+                {
+                    ModelState.AddModelError(string.Empty, "Cannot remove an existing user role.");
+                    return View(viewModel);
+                }
+                var resultOfAddingRoles = await _userManager.AddToRolesAsync(user, viewModel.Where(r => r.IsSelected == true).Select(r => r.RoleName));
+                if (!resultOfAddingRoles.Succeeded)
+                {
+                    ModelState.AddModelError(string.Empty, "Cannot add selected role to user.");
+                    return View(viewModel);
+                }
+                return Json(new { isValid = true, message = "The role is changed!" });
             }
             catch (Exception ex)
             {
