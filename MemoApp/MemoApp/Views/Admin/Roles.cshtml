@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "Roles";
+}
+<h1>Roles</h1>
+<hr />
+<table class="table table-light table-bordered table-hover table-striped" id="roleTable">
+    <thead>
+        <tr>
+            <th>Role id</th>
+            <th>Role name</th>
+        </tr>
+    </thead>
+</table>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.23/css/dataTables.bootstrap4.min.css" />
+
+@section Scripts{
+
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/dataTables.bootstrap4.min.js"></script>
+    <script>
+        var datatable;
+        $(document).ready(function () {
+            datatable = $('#roleTable').DataTable({
+                "ajax": {
+                    "url": "/Admin/GetRoles",
+                    "dataSrc": "",
+                    "type": "GET",
+                    "datatype": "json",
+                },
+                columns: [
+                    { "data": "id" },
+                    { "data": "name" }
+                ]                
+            })
+        })
+    </script>
+}

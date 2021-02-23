@@ -1,0 +1,44 @@
+﻿@{
+    ViewData["Title"] = "Users";
+}
+<h1>Users</h1>
+<hr />
+<table class="table table-light table-bordered table-hover table-striped" id="userTable">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Role</th>
+        </tr>
+    </thead>
+</table>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.23/css/dataTables.bootstrap4.min.css" />
+
+@section Scripts{
+
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/dataTables.bootstrap4.min.js"></script>
+    <script>
+        var datatable;
+        $(document).ready(function () {
+            datatable = $('#userTable').DataTable({
+                "ajax": {
+                    "url": "/Admin/GetUsers",
+                    "dataSrc": "",
+                    "type": "GET",
+                    "datatype": "json",
+                },
+                columns: [
+                    { "data": "username" },
+                    { "data": "email" },
+                    {
+                        "data": "roles", "render": function (data) {
+                            return data.join(", ");
+                        }
+                    }
+                ]
+            })
+        })
+    </script>
+}
