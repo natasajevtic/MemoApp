@@ -43,7 +43,7 @@ namespace MemoApp.Controllers
             try
             {
                 var roles = await _roleManager.Roles.ToListAsync();
-                return Json(roles);
+                return Json(_mapper.Map<List<IdentityRole>, List<RoleViewModel>>(roles));
             }
             catch (Exception ex)
             {
@@ -127,13 +127,19 @@ namespace MemoApp.Controllers
                 var resultOfRemovingRoles = await _userManager.RemoveFromRolesAsync(user, userRoles);
                 if (!resultOfRemovingRoles.Succeeded)
                 {
-                    ModelState.AddModelError(string.Empty, "Cannot remove an existing user role.");
+                    foreach (var error in resultOfRemovingRoles.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
                     return View(viewModel);
                 }
                 var resultOfAddingRoles = await _userManager.AddToRolesAsync(user, viewModel.Where(r => r.IsSelected == true).Select(r => r.RoleName));
                 if (!resultOfAddingRoles.Succeeded)
                 {
-                    ModelState.AddModelError(string.Empty, "Cannot add selected role to user.");
+                    foreach (var error in resultOfAddingRoles.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
                     return View(viewModel);
                 }
                 return Json(new { isValid = true, message = "The role is changed!" });
@@ -153,8 +159,16 @@ namespace MemoApp.Controllers
             {
                 var role = await _roleManager.FindByIdAsync(id);
                 if (role != null)
-                {                    
-                    return View(_mapper.Map<IdentityRole, RoleViewModel>(role));
+                {
+                    var viewModel = _mapper.Map<IdentityRole, RoleViewModel>(role);
+                    foreach (var user in _userManager.Users)
+                    {
+                        if (await _userManager.IsInRoleAsync(user, role.Name))
+                        {
+                            viewModel.Users.Add(user.UserName);
+                        }
+                    }
+                    return View(viewModel);
                 }
                 return NotFound();
             }
