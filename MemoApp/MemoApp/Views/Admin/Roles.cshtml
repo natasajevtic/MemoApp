@@ -3,11 +3,27 @@
 }
 <h1>Roles</h1>
 <hr />
+
+<div class="modal" role="dialog" id="modalAdd">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body"></div>
+        </div>
+    </div>
+</div>
+
 <table class="table table-light table-bordered table-hover table-striped" id="roleTable">
     <thead>
         <tr>
             <th>Role id</th>
             <th>Role name</th>
+            <th></th>
         </tr>
     </thead>
 </table>
@@ -30,8 +46,14 @@
                 },
                 columns: [
                     { "data": "id" },
-                    { "data": "name" }
-                ]                
+                    { "data": "name" },
+                    {
+                        "data": "id", "render": function (data) {
+                            return "<button class='btn btn-light' onclick=showPopupForm('@Url.Action("DetailsRole","Admin")/" +
+                                data + "','Details')><i class='fa fa-search-plus'></i> Details</button>";
+                        }
+                    }
+                ]
             })
         })
     </script>

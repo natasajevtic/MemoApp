@@ -1,4 +1,5 @@
-﻿using MemoApp.Helper;
+﻿using AutoMapper;
+using MemoApp.Helper;
 using MemoApp.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -18,11 +19,13 @@ namespace MemoApp.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IMapper _mapper;
 
-        public AdminController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public AdminController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _mapper = mapper;
         }
         public IActionResult Roles()
         {
@@ -134,6 +137,26 @@ namespace MemoApp.Controllers
                     return View(viewModel);
                 }
                 return Json(new { isValid = true, message = "The role is changed!" });
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [NoDirectAccess]
+        [HttpGet]
+        public async Task<IActionResult> DetailsRole(string id)
+        {
+            try
+            {
+                var role = await _roleManager.FindByIdAsync(id);
+                if (role != null)
+                {                    
+                    return View(_mapper.Map<IdentityRole, RoleViewModel>(role));
+                }
+                return NotFound();
             }
             catch (Exception ex)
             {
