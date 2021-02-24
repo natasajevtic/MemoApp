@@ -34,6 +34,7 @@
 
     <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.23/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/lib/bootbox/bootbox.min.js"></script>
     <script>
         var datatable;
         $(document).ready(function () {
@@ -50,11 +51,44 @@
                     {
                         "data": "id", "render": function (data) {
                             return "<button class='btn btn-light' onclick=showPopupForm('@Url.Action("DetailsRole","Admin")/" +
-                                data + "','Details')><i class='fa fa-search-plus'></i> Details</button>";
+                                data + "','Details')><i class='fa fa-search-plus'></i> Details</button>" +
+                                "<button class='btn btn-danger' onclick=deleteRole(\"" + data + "\")>" +
+                                "<i class='fa fa-trash'></i> Delete</button>";
                         }
                     }
                 ]
             })
         })
+
+        function deleteRole(id) {
+        bootbox.confirm({
+        title: "Confirmation",
+        message: "Are you sure you want to delete this role?",
+        callback: function (result) {
+            if (result) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("DeleteRole","Admin")/' + id,
+                    success: function (data) {
+                        if (data.success) {
+                            bootbox.alert(
+                                {
+                                    title: "Notification",
+                                    message: data.message
+                                });
+                            datatable.ajax.reload();
+                        }
+                    },
+                    error: function (xhr) {
+                        bootbox.alert({
+                            title: "Error: " + xhr.status,
+                            message: getErrorMessage(xhr)
+                        });
+                    }
+                })
+            }}
+        })
+        }
+
     </script>
 }

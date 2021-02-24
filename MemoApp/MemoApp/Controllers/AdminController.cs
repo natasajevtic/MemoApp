@@ -164,5 +164,34 @@ namespace MemoApp.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteRole(string id)
+        {
+            try
+            {
+                var role = await _roleManager.FindByIdAsync(id);
+                if (role != null)
+                {
+                    var users = await _userManager.GetUsersInRoleAsync(role.Name);
+                    if (users.Any())
+                    {
+                        return Json(new { success = true, message = "The role cannot be deleted. There are users in this role." });
+                    }
+                    var result = await _roleManager.DeleteAsync(role);
+                    if (result.Succeeded)
+                    {
+                        return Json(new { success = true, message = "The role is deleted!" });
+                    }
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
     }
 }
