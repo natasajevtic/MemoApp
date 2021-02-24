@@ -30,9 +30,7 @@ namespace MemoApp
 
             services.AddDbContext<MemoEntities>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
-
-            services.AddTransient<DataSeeder>();
+                    Configuration.GetConnectionString("DefaultConnection")));            
 
             services.AddScoped<IMemoService, MemoService>();
 

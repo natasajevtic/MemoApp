@@ -27,7 +27,7 @@ namespace MemoApp.Services
 
                 memo.CreatedAt = DateTime.Now;
                 memo.UpdatedAt = memo.CreatedAt;
-                memo.Status = _entities.Statuses.Where(s => s.Name == Statuses.ActiveStatus).FirstOrDefault();
+                memo.Status = _entities.Statuses.Where(s => s.Name == Statuses.Active.ToString()).FirstOrDefault();
 
                 _entities.Memos.Add(memo);
 
@@ -48,7 +48,7 @@ namespace MemoApp.Services
             var result = new Result<Memo>();
             try
             {
-                result.Value = _entities.Memos.Where(m => m.Id == id && m.Status.Name == Statuses.ActiveStatus)
+                result.Value = _entities.Memos.Where(m => m.Id == id && m.Status.Name == Statuses.Active.ToString())
                     .Include(m => m.Tags)
                     .Include(m => m.Status)
                     .FirstOrDefault();
@@ -102,7 +102,7 @@ namespace MemoApp.Services
                 var memoToDelete = GetMemoById(id).Value;
                 if (memoToDelete != null)
                 {
-                    memoToDelete.Status = _entities.Statuses.Where(s => s.Name == Statuses.DeletedStatus).FirstOrDefault();
+                    memoToDelete.Status = _entities.Statuses.Where(s => s.Name == Statuses.Deleted.ToString()).FirstOrDefault();
                     _entities.SaveChanges();
                     feedback.Value = true;
                     feedback.Status = StatusEnum.Succeeded;
@@ -121,7 +121,7 @@ namespace MemoApp.Services
             var result = new Result<List<Memo>>();
             try
             {
-                result.Value = _entities.Memos.Where(m => m.Status.Name == Statuses.ActiveStatus)
+                result.Value = _entities.Memos.Where(m => m.Status.Name == Statuses.Active.ToString())
                     .Include(m => m.Tags)
                     .Include(m => m.Status)
                     .ToList();
@@ -138,7 +138,7 @@ namespace MemoApp.Services
             var result = new Result<List<Memo>>();
             try
             {
-                result.Value = _entities.Memos.Where(m => m.Status.Name == Statuses.ActiveStatus && m.UserId == userId)
+                result.Value = _entities.Memos.Where(m => m.Status.Name == Statuses.Active.ToString() && m.UserId == userId)
                     .Include(m => m.Tags)
                     .Include(m => m.Status)
                     .ToList();
@@ -155,7 +155,7 @@ namespace MemoApp.Services
             var result = new Result<Memo>();
             try
             {
-                result.Value = _entities.Memos.Where(m => m.Id == memoId && m.UserId == userId && m.Status.Name == Statuses.ActiveStatus)
+                result.Value = _entities.Memos.Where(m => m.Id == memoId && m.UserId == userId && m.Status.Name == Statuses.Active.ToString())
                     .Include(m => m.Tags)
                     .Include(m => m.Status)
                     .FirstOrDefault();

@@ -64,15 +64,19 @@ body {
 
 .btn {
     margin-bottom: 5px;
+    margin-left: 5px;
 }
 
-#memoTable {
+table {
     table-layout: fixed;
     width: 100%;
 }
 
-    #memoTable td {
+    table td {
         overflow: auto;
+    }
+    table td:last-child{
+        text-align:center;
     }
 
 .row-id {

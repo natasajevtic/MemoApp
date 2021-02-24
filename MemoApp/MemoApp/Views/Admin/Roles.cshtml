@@ -1,0 +1,94 @@
+﻿@{
+    ViewData["Title"] = "Roles";
+}
+<h1>Roles</h1>
+<hr />
+
+<div class="modal" role="dialog" id="modalAdd">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body"></div>
+        </div>
+    </div>
+</div>
+
+<table class="table table-light table-bordered table-hover table-striped" id="roleTable">
+    <thead>
+        <tr>
+            <th>Role id</th>
+            <th>Role name</th>
+            <th></th>
+        </tr>
+    </thead>
+</table>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.23/css/dataTables.bootstrap4.min.css" />
+
+@section Scripts{
+
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/lib/bootbox/bootbox.min.js"></script>
+    <script>
+        var datatable;
+        $(document).ready(function () {
+            datatable = $('#roleTable').DataTable({
+                "ajax": {
+                    "url": "/Admin/GetRoles",
+                    "dataSrc": "",
+                    "type": "GET",
+                    "datatype": "json",
+                },
+                columns: [
+                    { "data": "id" },
+                    { "data": "name" },
+                    {
+                        "data": "id", "render": function (data) {
+                            return "<button class='btn btn-light' onclick=showPopupForm('@Url.Action("DetailsRole","Admin")/" +
+                                data + "','Details')><i class='fa fa-search-plus'></i> Details</button>" +
+                                "<button class='btn btn-danger' onclick=deleteRole(\"" + data + "\")>" +
+                                "<i class='fa fa-trash'></i> Delete</button>";
+                        }
+                    }
+                ]
+            })
+        })
+
+        function deleteRole(id) {
+        bootbox.confirm({
+        title: "Confirmation",
+        message: "Are you sure you want to delete this role?",
+        callback: function (result) {
+            if (result) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("DeleteRole","Admin")/' + id,
+                    success: function (data) {
+                        if (data.success) {
+                            bootbox.alert(
+                                {
+                                    title: "Notification",
+                                    message: data.message
+                                });
+                            datatable.ajax.reload();
+                        }
+                    },
+                    error: function (xhr) {
+                        bootbox.alert({
+                            title: "Error: " + xhr.status,
+                            message: getErrorMessage(xhr)
+                        });
+                    }
+                })
+            }}
+        })
+        }
+
+    </script>
+}

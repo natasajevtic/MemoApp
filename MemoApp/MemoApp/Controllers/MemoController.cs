@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using MemoApp.Constants;
 using MemoApp.Data;
 using MemoApp.Helper;
 using MemoApp.Services;
@@ -40,7 +39,7 @@ namespace MemoApp.Controllers
             {
                 var memoModelList = new List<Memo>();
                 //if the user is an admin, getting memos of all users
-                if (User.IsInRole(Roles.AdminRole))
+                if (User.IsInRole("Admin"))
                 {
                     memoModelList = _memoService.GetAllMemos().Value;
                 }
@@ -107,7 +106,7 @@ namespace MemoApp.Controllers
                 }
 
                 var memoModel = new Memo();
-                if (User.IsInRole(Roles.AdminRole))
+                if (User.IsInRole("Admin"))
                 {
                     memoModel = _memoService.GetMemoById(id.Value).Value;
                 }
@@ -131,7 +130,7 @@ namespace MemoApp.Controllers
 
         [NoDirectAccess]
         [HttpGet]
-        [Authorize(Roles = Roles.AdminRole)]
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(long? id)
         {
             try
@@ -156,7 +155,7 @@ namespace MemoApp.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = Roles.AdminRole)]
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(MemoViewModel memoViewModel)
         {
             try
@@ -181,7 +180,7 @@ namespace MemoApp.Controllers
         }        
 
         [HttpPost]
-        [Authorize(Roles = Roles.AdminRole)]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(long id)
         {
             try

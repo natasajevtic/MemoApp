@@ -1,8 +1,8 @@
 ﻿namespace MemoApp.Constants
 {
-    public static class Statuses
+    public enum Statuses
     {
-        public const string ActiveStatus = "Active";
-        public const string DeletedStatus = "Deleted";
+        Active = 1,
+        Deleted
     }
 }
