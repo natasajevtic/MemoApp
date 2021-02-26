@@ -207,5 +207,95 @@ namespace MemoApp.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
+        [NoDirectAccess]
+        [HttpGet]
+        public async Task<IActionResult> EditRole(string id)
+        {
+            try
+            {
+                var role = await _roleManager.FindByIdAsync(id);
+                if (role != null)
+                {
+                    return View(_mapper.Map<IdentityRole, RoleViewModel>(role));
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditRole(RoleViewModel viewModel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var role = await _roleManager.FindByIdAsync(viewModel.Id);
+                    if (role != null)
+                    {
+                        role.Name = viewModel.Name;
+                        var result = await _roleManager.UpdateAsync(role);
+                        if (result.Succeeded)
+                        {
+                            return Json(new { isValid = true, message = "The role is updated!" });
+                        }
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+                        return View(viewModel);
+                    }
+                    return NotFound();
+                }
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [NoDirectAccess]
+        [HttpGet]
+        public IActionResult CreateRole()
+        {
+            var viewModel = new RoleViewModel();
+            return View(viewModel);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> CreateRole(RoleViewModel viewModel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {                    
+                    var result = await _roleManager.CreateAsync(new IdentityRole(viewModel.Name));
+                    if (result.Succeeded)
+                    {
+                        return Json(new { isValid = true, message = "The role is created!" });
+                    }
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                        return View(viewModel);
+                    }
+                }
+                return View(viewModel);
+
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
     }
 }

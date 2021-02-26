@@ -4,6 +4,10 @@
 <h1>Roles</h1>
 <hr />
 
+<button onclick="showPopupForm('@Url.Action("CreateRole","Admin")','Create role')" class="btn btn-success btn-lg">
+    <i class="fa fa-plus"></i> Add new
+</button>
+
 <div class="modal" role="dialog" id="modalAdd">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -52,6 +56,8 @@
                         "data": "id", "render": function (data) {
                             return "<button class='btn btn-light' onclick=showPopupForm('@Url.Action("DetailsRole","Admin")/" +
                                 data + "','Details')><i class='fa fa-search-plus'></i> Details</button>" +
+                                "<button class='btn btn-warning' onclick=showPopupForm('@Url.Action("EditRole","Admin")/" +
+                                    data + "','Edit')><i class='fa fa-edit'></i> Edit</button>" +
                                 "<button class='btn btn-danger' onclick=deleteRole(\"" + data + "\")>" +
                                 "<i class='fa fa-trash'></i> Delete</button>";
                         }
@@ -82,8 +88,7 @@
                     error: function (xhr) {
                         bootbox.alert({
                             title: "Error: " + xhr.status,
-                            message: getErrorMessage(xhr)
-                        });
+                            message: getErrorMessage(xhr)                       });
                     }
                 })
             }}

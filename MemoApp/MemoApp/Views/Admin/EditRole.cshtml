@@ -1,0 +1,22 @@
+﻿@model RoleViewModel
+@{
+    Layout = null;
+}
+<form method="post" asp-controller="Admin" asp-action="EditRole" onsubmit="return submitForm(this)">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+            <label asp-for="Id">Role id</label>
+            <input asp-for="Id" class="form-control" disabled="disabled"/>
+        </div>
+        <div class="form-group">
+            <label asp-for="Name">Role name</label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-success">Save</button>
+        <button data-dismiss="modal" class="btn btn-danger">Close</button>
+    </div>
+</form>
+
+<partial name="../Shared/_ValidationScriptsPartial" />
