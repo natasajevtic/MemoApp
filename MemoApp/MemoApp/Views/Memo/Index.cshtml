@@ -1,8 +1,9 @@
-﻿@model List<MemoViewModel>
+﻿@inject IViewLocalizer localizer 
+@model List<MemoViewModel>
 @{
-    ViewData["Title"] = "Memos";
+    ViewData["Title"] = localizer["Memos"];
 }
-<h1>Memos</h1>
+<h1>@localizer["Memos"]</h1>
 <hr />
 <div class="modal" role="dialog" id="modalAdd">
     <div class="modal-dialog modal-lg">
@@ -19,18 +20,18 @@
 </div>
 
 <button class="btn btn-success btn-lg" onclick="showPopupForm('@Url.Action("Create","Memo")', 'Add memo')">
-    <i class="fa fa-plus"></i> Add new
+    <i class="fa fa-plus"></i> @localizer["Add"]
 </button>
 
 <table class="table table-light table-bordered table-hover table-striped" id="memoTable">
     <thead>
         <tr>
             <th class="row-id">Id</th>
-            <th>User</th>
-            <th>Title</th>
-            <th>Note</th>
-            <th>Tags</th>
-            <th>Created at</th>
+            <th>@localizer["User"]</th>
+            <th>@localizer["Title"]</th>
+            <th>@localizer["Note"]</th>
+            <th>@localizer["Tags"]</th>
+            <th>@localizer["Created at"]</th>
             <th></th>
         </tr>
     </thead>
@@ -81,14 +82,14 @@
                             if (role) {
                                 return "<div class='btn-group-vertical'>" +
                                     "<button class='btn btn-light' onclick=showPopupForm('@Url.Action("Details","Memo")/" +
-                                    data + "','Details')><i class='fa fa-search-plus'></i> Details</button>" +
+                                    data + "','@localizer["Details"]')><i class='fa fa-search-plus'></i> @localizer["Details"]</button>" +
                                     "<button class='btn btn-warning' onclick=showPopupForm('@Url.Action("Edit","Memo")/" +
-                                    data + "','Edit')><i class='fa fa-edit'></i> Edit</button>" +
-                                    "<button class='btn btn-danger' onclick=deleteMemo(" + data + ")><i class='fa fa-trash'></i> Delete</button><div>";
+                                    data + "','@localizer["Edit"]')><i class='fa fa-edit'></i> @localizer["Edit"]</button>" +
+                                    "<button class='btn btn-danger' onclick=deleteMemo(" + data + ")><i class='fa fa-trash'></i> @localizer["Delete"]</button><div>";
                             }
                             else {
                                 return "<button class='btn btn-light' onclick=showPopupForm('@Url.Action("Details","Memo")/" +
-                                    data + "','Details')><i class='fa fa-search-plus'></i> Details</button>";
+                                    data + "','@localizer["Details"]')><i class='fa fa-search-plus'></i> @localizer["Details"]</button>";
                             }
                         }
                     }
