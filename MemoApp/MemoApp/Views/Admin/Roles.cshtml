@@ -81,7 +81,7 @@
                             bootbox.alert(
                                 {
                                     title: "@localizer["Notification"]",
-                                    message: data.message
+                                    message: data.message.value
                                 });
                             datatable.ajax.reload();
                         }
@@ -89,7 +89,8 @@
                     error: function (xhr) {
                         bootbox.alert({
                             title: "@localizer["Error: "]" + xhr.status,
-                            message: getErrorMessage(xhr)                       });
+                            message: getErrorMessage(xhr)
+                       });
                     }
                 })
             }}

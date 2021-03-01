@@ -12,6 +12,7 @@
             return "An unknown error occurred. Please try again.";
     }
 }
+}
 
 function showPopupForm(url, title) {
     $.ajax({
@@ -44,7 +45,7 @@ function submitForm(form) {
                     bootbox.alert(
                         {
                             title: "Notification",
-                            message: data.message
+                            message: data.message.value
                         });
                     datatable.ajax.reload();
                 }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System;
@@ -20,12 +21,14 @@ namespace MemoApp.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IMapper _mapper;
+        private readonly IHtmlLocalizer<AdminController> _localizator;
 
-        public AdminController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper)
+        public AdminController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper, IHtmlLocalizer<AdminController> localizator)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _mapper = mapper;
+            _localizator = localizator;
         }
         public IActionResult Roles()
         {
@@ -142,7 +145,7 @@ namespace MemoApp.Controllers
                     }
                     return View(viewModel);
                 }
-                return Json(new { isValid = true, message = "The role is changed!" });
+                return Json(new { isValid = true, message = _localizator["The role is changed."] });
             }
             catch (Exception ex)
             {
@@ -190,12 +193,12 @@ namespace MemoApp.Controllers
                     var users = await _userManager.GetUsersInRoleAsync(role.Name);
                     if (users.Any())
                     {
-                        return Json(new { success = true, message = "The role cannot be deleted. There are users in this role." });
+                        return Json(new { success = true, message = _localizator["The role cannot be deleted. There are users in this role."] });
                     }
                     var result = await _roleManager.DeleteAsync(role);
                     if (result.Succeeded)
                     {
-                        return Json(new { success = true, message = "The role is deleted!" });
+                        return Json(new { success = true, message = _localizator["The role is deleted."] });
                     }
                     return StatusCode(StatusCodes.Status500InternalServerError);
                 }
@@ -242,7 +245,7 @@ namespace MemoApp.Controllers
                         var result = await _roleManager.UpdateAsync(role);
                         if (result.Succeeded)
                         {
-                            return Json(new { isValid = true, message = "The role is updated!" });
+                            return Json(new { isValid = true, message = _localizator["The role is updated."] });
                         }
                         foreach (var error in result.Errors)
                         {
@@ -280,7 +283,7 @@ namespace MemoApp.Controllers
                     var result = await _roleManager.CreateAsync(new IdentityRole(viewModel.Name));
                     if (result.Succeeded)
                     {
-                        return Json(new { isValid = true, message = "The role is created!" });
+                        return Json(new { isValid = true, message = _localizator["The role is created."] });
                     }
                     foreach (var error in result.Errors)
                     {

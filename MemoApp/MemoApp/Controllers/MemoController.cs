@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Localization;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -21,12 +22,14 @@ namespace MemoApp.Controllers
         private readonly IMemoService _memoService;
         private readonly IMapper _mapper;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IHtmlLocalizer<MemoController> _localizer;
 
-        public MemoController(IMemoService memoService, IMapper mapper, UserManager<IdentityUser> userManager)
+        public MemoController(IMemoService memoService, IMapper mapper, UserManager<IdentityUser> userManager, IHtmlLocalizer<MemoController> localizer)
         {
             _memoService = memoService;
             _mapper = mapper;
             _userManager = userManager;
+            _localizer = localizer;
         }
 
         public IActionResult Index()
@@ -82,7 +85,7 @@ namespace MemoApp.Controllers
                     var memoId = _memoService.AddMemo(memoModel).Value;
                     if (memoId > 0)
                     {                        
-                        return Json(new { isValid = true, message = "The memo is saved!" });
+                        return Json(new { isValid = true, message = _localizer["The memo is saved."] });
                     }
                     return StatusCode(StatusCodes.Status500InternalServerError);
                 }
@@ -167,7 +170,7 @@ namespace MemoApp.Controllers
                     var updatedModel = _memoService.UpdateMemo(memoModel);
                     if (updatedModel.Succeeded)
                     {                        
-                        return Json(new { isValid = true, message = "The memo is updated!" });
+                        return Json(new { isValid = true, message = _localizer["The memo is updated."] });
                     }
                     return StatusCode(StatusCodes.Status500InternalServerError);
                 }
@@ -189,7 +192,7 @@ namespace MemoApp.Controllers
                 var isDeleted = _memoService.DeleteMemo(id);
                 if (isDeleted.Value == true)
                 {
-                    return Json(new { success = true, message = "The memo is deleted." });
+                    return Json(new { success = true, message = _localizer["The memo is deleted."] });
                 }
             }
             catch (Exception ex)
