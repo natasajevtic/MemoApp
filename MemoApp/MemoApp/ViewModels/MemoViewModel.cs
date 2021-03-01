@@ -9,7 +9,8 @@ namespace MemoApp.ViewModels
     {
         public long Id { get; set; }
 
-        [Required, MaxLength(50)]
+        [Required(ErrorMessage = "The Title field is required.")]
+        [MaxLength(50, ErrorMessage = "The Title must be less than 50 characters long.")]
         public string Title { get; set; }
         public string Note { get; set; }
         public DateTime CreatedAt { get; set; }

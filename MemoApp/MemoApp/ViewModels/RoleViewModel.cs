@@ -6,7 +6,8 @@ namespace MemoApp.ViewModels
     public class RoleViewModel
     {
         public string Id { get; set; }
-        [Required, MaxLength(256)]
+        [Required(ErrorMessage = "The Name field is required.")]
+        [MaxLength(256, ErrorMessage = "The Name must be less than 256 characters long.")]
         public string Name { get; set; }
         public List<string> Users { get; set; }
 
