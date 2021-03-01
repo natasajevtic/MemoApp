@@ -1,11 +1,12 @@
-﻿@{
-    ViewData["Title"] = "Roles";
+﻿@inject IViewLocalizer localizer
+@{
+    ViewData["Title"] = localizer["Roles"];
 }
-<h1>Roles</h1>
+<h1>@localizer["Roles"]</h1>
 <hr />
 
-<button onclick="showPopupForm('@Url.Action("CreateRole","Admin")','Create role')" class="btn btn-success btn-lg">
-    <i class="fa fa-plus"></i> Add new
+<button onclick="showPopupForm('@Url.Action("CreateRole","Admin")','@localizer["Add"]')" class="btn btn-success btn-lg">
+    <i class="fa fa-plus"></i> @localizer["Add"]
 </button>
 
 <div class="modal" role="dialog" id="modalAdd">
@@ -25,8 +26,8 @@
 <table class="table table-light table-bordered table-hover table-striped" id="roleTable">
     <thead>
         <tr>
-            <th>Role id</th>
-            <th>Role name</th>
+            <th>@localizer["Role id"]</th>
+            <th>@localizer["Role name"]</th>
             <th></th>
         </tr>
     </thead>
@@ -55,11 +56,11 @@
                     {
                         "data": "id", "render": function (data) {
                             return "<button class='btn btn-light' onclick=showPopupForm('@Url.Action("DetailsRole","Admin")/" +
-                                data + "','Details')><i class='fa fa-search-plus'></i> Details</button>" +
+                                data + "','@localizer["Details"]')><i class='fa fa-search-plus'></i> @localizer["Details"]</button>" +
                                 "<button class='btn btn-warning' onclick=showPopupForm('@Url.Action("EditRole","Admin")/" +
-                                    data + "','Edit')><i class='fa fa-edit'></i> Edit</button>" +
+                                    data + "','@localizer["Edit"]')><i class='fa fa-edit'></i> @localizer["Edit"]</button>" +
                                 "<button class='btn btn-danger' onclick=deleteRole(\"" + data + "\")>" +
-                                "<i class='fa fa-trash'></i> Delete</button>";
+                                "<i class='fa fa-trash'></i> @localizer["Delete"]</button>";
                         }
                     }
                 ]
@@ -68,8 +69,8 @@
 
         function deleteRole(id) {
         bootbox.confirm({
-        title: "Confirmation",
-        message: "Are you sure you want to delete this role?",
+        title: "@localizer["Confirmation"]",
+        message: "@localizer["Are you sure you want to delete this role?"]",
         callback: function (result) {
             if (result) {
                 $.ajax({
@@ -79,7 +80,7 @@
                         if (data.success) {
                             bootbox.alert(
                                 {
-                                    title: "Notification",
+                                    title: "@localizer["Notification"]",
                                     message: data.message
                                 });
                             datatable.ajax.reload();
@@ -87,7 +88,7 @@
                     },
                     error: function (xhr) {
                         bootbox.alert({
-                            title: "Error: " + xhr.status,
+                            title: "@localizer["Error: "]" + xhr.status,
                             message: getErrorMessage(xhr)                       });
                     }
                 })

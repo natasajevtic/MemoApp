@@ -19,7 +19,7 @@
     </div>
 </div>
 
-<button class="btn btn-success btn-lg" onclick="showPopupForm('@Url.Action("Create","Memo")', 'Add memo')">
+<button class="btn btn-success btn-lg" onclick="showPopupForm('@Url.Action("Create","Memo")', '@localizer["Add"]')">
     <i class="fa fa-plus"></i> @localizer["Add"]
 </button>
 
@@ -99,8 +99,8 @@
 
         function deleteMemo(id) {
         bootbox.confirm({
-        title: "Confirmation",
-        message: "Are you sure you want to delete this memo?",
+        title: "@localizer["Confirmation"]",
+        message: "@localizer["Are you sure you want to delete this memo?"]",
         callback: function (result) {
             if (result) {
                 $.ajax({
@@ -110,7 +110,7 @@
                         if (data.success) {
                             bootbox.alert(
                                 {
-                                    title: "Notification",
+                                    title: "@localizer["Notification"]",
                                     message: data.message
                                 });
                             datatable.ajax.reload();
@@ -118,7 +118,7 @@
                     },
                     error: function (xhr) {
                         bootbox.alert({
-                            title: "Error: " + xhr.status,
+                            title: "@localizer["Error: "]" + xhr.status,
                             message: getErrorMessage(xhr)
                         });
                     }

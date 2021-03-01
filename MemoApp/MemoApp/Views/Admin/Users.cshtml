@@ -1,7 +1,8 @@
-﻿@{
-    ViewData["Title"] = "Users";
+﻿@inject IViewLocalizer localizer 
+@{
+    ViewData["Title"] = localizer["Users"];
 }
-<h1>Users</h1>
+<h1>@localizer["Users"]</h1>
 <hr />
 
 <div class="modal" role="dialog" id="modalAdd">
@@ -21,9 +22,9 @@
 <table class="table table-light table-bordered table-hover table-striped" id="userTable">
     <thead>
         <tr>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Role</th>
+            <th>@localizer["Username"]</th>
+            <th>@localizer["Email"]</th>
+            <th>@localizer["Role"]</th>
             <th></th>
         </tr>
     </thead>
@@ -57,7 +58,7 @@
                     {
                         "data": "userId", "render": function (data) {
                             return "<button class='btn btn-warning' onclick=showPopupForm('@Url.Action("EditUserRole","Admin")/" +
-                                data + "','Edit')><i class='fa fa-edit'></i> Change role</button>"
+                                data + "','@localizer["Edit"]')><i class='fa fa-edit'></i> @localizer["Change role"]</button>"
                         }
                     }
                 ]
