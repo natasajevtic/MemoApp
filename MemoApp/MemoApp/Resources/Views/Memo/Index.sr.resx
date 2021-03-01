@@ -144,6 +144,9 @@
   <data name="Memos" xml:space="preserve">
     <value>Beleške</value>
   </data>
+  <data name="No" xml:space="preserve">
+    <value>Ne</value>
+  </data>
   <data name="Note" xml:space="preserve">
     <value>Beleška</value>
   </data>
@@ -158,5 +161,8 @@
   </data>
   <data name="User" xml:space="preserve">
     <value>Korisnik</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Da</value>
   </data>
 </root>

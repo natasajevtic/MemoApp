@@ -138,6 +138,9 @@
   <data name="Error" xml:space="preserve">
     <value>Greška</value>
   </data>
+  <data name="No" xml:space="preserve">
+    <value>Ne</value>
+  </data>
   <data name="Notification" xml:space="preserve">
     <value>Obaveštenje</value>
   </data>
@@ -149,5 +152,8 @@
   </data>
   <data name="Roles" xml:space="preserve">
     <value>Uloge</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Da</value>
   </data>
 </root>

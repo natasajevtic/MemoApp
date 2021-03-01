@@ -1,17 +1,34 @@
-﻿function getErrorMessage(xhr) {
-    switch (xhr.status) {
-        case 400:
-            return "Bad request. Please check the requested URL.";
-        case 403:
-            return "Access denied. You do not have access to this resource.";
-        case 404:
-            return "This resource was not found.";
-        case 500:
-            return "Sorry, something went wrong. Please try later.";
-        default:
-            return "An unknown error occurred. Please try again.";
+﻿var culture = $("#selectedCulture").val();
+
+function getErrorMessage(xhr) {
+    if (culture == "en-US") {
+        switch (xhr.status) {
+            case 400:
+                return "Bad request. Please check the requested URL.";
+            case 403:
+                return "Access denied. You do not have access to this resource.";
+            case 404:
+                return "This resource was not found.";
+            case 500:
+                return "Sorry, something went wrong. Please try later.";
+            default:
+                return "An unknown error occurred. Please try again.";
+        }
     }
-}
+    else if (culture == "sr") {
+        switch (xhr.status) {
+            case 400:
+                return "Loš zahtev. Molimo vas proverite zahtevani URL.";
+            case 403:
+                return "Pristup odbijen. Nemate dozvolu za pristup ovom resursu.";
+            case 404:
+                return "Traženi resurs ne može biti pronađen.";
+            case 500:
+                return "Izvinite, nešto nije u redu. Pokušajte kasnije.";
+            default:
+                return "Dogodila se nepoznata greška. Pokušajte kasnije.";
+        }
+    }
 }
 
 function showPopupForm(url, title) {
@@ -45,7 +62,7 @@ function submitForm(form) {
                     bootbox.alert(
                         {
                             title: "Notification",
-                            message: data.message.value
+                            message: data.message.value                           
                         });
                     datatable.ajax.reload();
                 }

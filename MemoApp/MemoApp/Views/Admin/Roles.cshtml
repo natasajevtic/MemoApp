@@ -71,6 +71,14 @@
         bootbox.confirm({
         title: "@localizer["Confirmation"]",
         message: "@localizer["Are you sure you want to delete this role?"]",
+        buttons: {
+                confirm: {
+                    label: '@localizer["Yes"]',
+                },
+                cancel: {
+                    label: '@localizer["No"]',
+                }
+            },
         callback: function (result) {
             if (result) {
                 $.ajax({

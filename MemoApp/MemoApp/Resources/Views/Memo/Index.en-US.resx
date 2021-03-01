@@ -144,6 +144,9 @@
   <data name="Memos" xml:space="preserve">
     <value>Memos</value>
   </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
+  </data>
   <data name="Note" xml:space="preserve">
     <value>Note</value>
   </data>
@@ -158,5 +161,8 @@
   </data>
   <data name="User" xml:space="preserve">
     <value>User</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Yes</value>
   </data>
 </root>
