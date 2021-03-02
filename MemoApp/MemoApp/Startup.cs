@@ -1,4 +1,5 @@
 using MemoApp.Data;
+using MemoApp.Models;
 using MemoApp.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -47,6 +48,9 @@ namespace MemoApp
                 .AddDefaultUI()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.Configure<PersonSettingsModel>(Configuration.GetSection("PersonSettings"));
+            services.AddScoped<ISettingsService, SettingsService>();
 
             services.AddLocalization(opt => { opt.ResourcesPath = "Resources"; });
             services.AddMvc().AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix).AddDataAnnotationsLocalization();

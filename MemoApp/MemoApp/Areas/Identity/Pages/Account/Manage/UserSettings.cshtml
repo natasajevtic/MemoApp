@@ -1,0 +1,25 @@
+﻿@page
+@model UserSettingsModel
+@{
+}
+<form method="post">
+    <input type="hidden" asp-for="Settings.Id" />
+    <input type="hidden" asp-for="Settings.UserId" />
+    <div class="form-group">
+        <label asp-for="Settings.ZoneName">Time zone</label>
+        <select asp-for="Settings.ZoneName" asp-items="Model.Zones" class="form-control"></select>
+    </div>
+    <div class="form-group">
+        <label asp-for="Settings.DateFormat">Date format</label>
+        <select asp-for="Settings.DateFormat" asp-items="Model.DateFormats" class="form-control"></select>
+    </div>
+    <div class="form-group">
+        <label asp-for="Settings.TimeFormat">Time format</label>
+        <select asp-for="Settings.TimeFormat" asp-items="Model.TimeFormats" class="form-control"></select>
+    </div>
+    <div class="form-group">
+        <label asp-for="Settings.Culture">Language</label>
+        <select asp-for="Settings.Culture" asp-items="Model.Cultures" class="form-control"></select>
+    </div>
+    <button type="submit" class="btn btn-success">Save</button>
+</form>

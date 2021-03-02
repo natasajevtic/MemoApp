@@ -13,5 +13,9 @@ namespace MemoApp.Services
         IResult<List<Memo>> GetUserMemos(string userId);
         IResult<Memo> UpdateMemo(Memo memo);
         IFeedback<bool> DeleteMemo(long id);
+
+        IFeedback<long> AddSettings(Setting settings);
+        IResult<Setting> UpdateSettings(Setting settings);
+        IResult<Setting> GetSettingsById(long id);
     }
 }

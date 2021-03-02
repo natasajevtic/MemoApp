@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MemoApp.Services;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -13,8 +14,9 @@ namespace MemoApp.ViewModels
         [MaxLength(50, ErrorMessage = "The Title must be less than 50 characters long.")]
         public string Title { get; set; }
         public string Note { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public string CreatedAt { get; set; }
+        public string UpdatedAt { get; set; }
+
         public string UserId { get; set; }
         public StatusViewModel Status { get; set; }
         public List<TagViewModel> Tags { get; set; }
@@ -51,6 +53,6 @@ namespace MemoApp.ViewModels
         public MemoViewModel()
         {
             Tags = new List<TagViewModel>();
-        }
+        }       
     }
 }

@@ -1,4 +1,4 @@
-﻿@inject IViewLocalizer localizer 
+﻿@inject IViewLocalizer localizer
 @model List<MemoViewModel>
 @{
     ViewData["Title"] = localizer["Memos"];
@@ -44,7 +44,6 @@
     <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.23/js/dataTables.bootstrap4.min.js"></script>
     <script src="~/lib/bootbox/bootbox.min.js"></script>
-    <script src="~/lib/moment/moment.min.js"></script>
     <script>
         var datatable;
         var role = @(User.IsInRole("Admin")? "true":"false");
@@ -72,11 +71,7 @@
                             return text;
                         }
                     },
-                    {
-                        "data": "createdAt", "render": function (data) {
-                            return moment(data).format("MM/DD/YYYY HH:mm:ss");
-                        }
-                    },
+                    {"data": "createdAt"},
                     {
                         "data": "id", "render": function (data) {
                             if (role) {

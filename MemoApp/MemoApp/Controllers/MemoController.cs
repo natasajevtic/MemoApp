@@ -23,13 +23,15 @@ namespace MemoApp.Controllers
         private readonly IMapper _mapper;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IHtmlLocalizer<MemoController> _localizer;
+        private readonly ISettingsService _settingsService;
 
-        public MemoController(IMemoService memoService, IMapper mapper, UserManager<IdentityUser> userManager, IHtmlLocalizer<MemoController> localizer)
+        public MemoController(IMemoService memoService, IMapper mapper, UserManager<IdentityUser> userManager, IHtmlLocalizer<MemoController> localizer, ISettingsService settingsService)
         {
             _memoService = memoService;
             _mapper = mapper;
             _userManager = userManager;
             _localizer = localizer;
+            _settingsService = settingsService;
         }
 
         public IActionResult Index()
@@ -42,6 +44,7 @@ namespace MemoApp.Controllers
             try
             {
                 var memoModelList = new List<Memo>();
+                var user = await _userManager.FindByNameAsync(User.Identity.Name);
                 //if the user is an admin, getting memos of all users
                 if (User.IsInRole("Admin"))
                 {
@@ -49,11 +52,16 @@ namespace MemoApp.Controllers
                 }
                 //if the user is not admin, getting only his memos
                 else
-                {
-                    var user = await _userManager.FindByNameAsync(User.Identity.Name);
+                {                    
                     memoModelList = _memoService.GetUserMemos(user.Id).Value;
                 }
-                return Json(_mapper.Map<List<Memo>, List<MemoViewModel>>(memoModelList));
+                var memoViewModelList = _mapper.Map<List<Memo>, List<MemoViewModel>>(memoModelList);
+                foreach (var memo in memoViewModelList)
+                {
+                   memo.CreatedAt = _settingsService.ConvertUTCtoLocalDateTimeString(DateTime.Parse(memo.CreatedAt), user.Id);
+                   memo.UpdatedAt = _settingsService.ConvertUTCtoLocalDateTimeString(DateTime.Parse(memo.UpdatedAt), user.Id);
+                }
+                return Json(memoViewModelList);
             }
             catch (Exception ex)
             {
@@ -110,18 +118,21 @@ namespace MemoApp.Controllers
                 }
 
                 var memoModel = new Memo();
+                var user = await _userManager.FindByNameAsync(User.Identity.Name);
                 if (User.IsInRole("Admin"))
                 {
                     memoModel = _memoService.GetMemoById(id.Value).Value;
                 }
                 else
-                {
-                    var user = await _userManager.FindByNameAsync(User.Identity.Name);
+                {                    
                     memoModel = _memoService.GetUserMemoById(user.Id, id.Value).Value;
                 }
                 if (memoModel != null)
                 {
-                    return View(_mapper.Map<Memo, MemoViewModel>(memoModel));
+                    var memoViewModel = _mapper.Map<Memo, MemoViewModel>(memoModel);
+                    memoViewModel.CreatedAt = _settingsService.ConvertUTCtoLocalDateTimeString(DateTime.Parse(memoViewModel.CreatedAt), user.Id);
+                    memoViewModel.UpdatedAt = _settingsService.ConvertUTCtoLocalDateTimeString(DateTime.Parse(memoViewModel.CreatedAt), user.Id);
+                    return View(memoViewModel);
                 }
                 return NotFound();
             }
@@ -205,10 +216,10 @@ namespace MemoApp.Controllers
         [AllowAnonymous]
         [HttpPost]
         public IActionResult CultureManagement(string culture, string returnUrl)
-        {
+        {            
             Response.Cookies.Append(CookieRequestCultureProvider.DefaultCookieName,
                 CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
-                new CookieOptions { Expires = DateTimeOffset.Now.AddDays(30) });
+                new CookieOptions { Expires = DateTimeOffset.Now.AddDays(30) });            
 
             return LocalRedirect(returnUrl);
         }

@@ -25,7 +25,7 @@ namespace MemoApp.Services
             {
                 _entities.Tags.AddRange(memo.Tags);
 
-                memo.CreatedAt = DateTime.Now;
+                memo.CreatedAt = DateTime.UtcNow;
                 memo.UpdatedAt = memo.CreatedAt;
                 memo.Status = _entities.Statuses.Where(s => s.Name == Statuses.Active.ToString()).FirstOrDefault();
 
@@ -41,7 +41,7 @@ namespace MemoApp.Services
                 feedback.Status = StatusEnum.Error;
             }
             return feedback;
-        }        
+        }
 
         public IResult<Memo> GetMemoById(long id)
         {
@@ -68,7 +68,7 @@ namespace MemoApp.Services
                 var memoToUpdate = GetMemoById(memo.Id).Value;
                 if (memoToUpdate != null)
                 {
-                    memoToUpdate.UpdatedAt = DateTime.Now;
+                    memoToUpdate.UpdatedAt = DateTime.UtcNow;
                     memoToUpdate.Note = memo.Note;
                     memoToUpdate.Title = memo.Title;
 
@@ -163,6 +163,63 @@ namespace MemoApp.Services
             catch (Exception ex)
             {
                 Log.Error($"Failed to get user {userId} memo by id {memoId}: {ex.Message}");
+            }
+            return result;
+        }
+
+        public IFeedback<long> AddSettings(Setting settings)
+        {
+            var feedback = new Feedback<long>();
+            try
+            {
+                _entities.Settings.Add(settings);
+
+                _entities.SaveChanges();
+                feedback.Value = settings.Id;
+                feedback.Status = StatusEnum.Succeeded;
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Failed to add a new settings: {ex.Message}");
+                feedback.Status = StatusEnum.Error;
+            }
+            return feedback;
+        }
+
+        public IResult<Setting> UpdateSettings(Setting settings)
+        {
+            var result = new Result<Setting>();
+            try
+            {
+                var settingsToUpdate = GetSettingsById(settings.Id).Value;
+                if (settingsToUpdate != null)
+                {
+                    settingsToUpdate.ZoneName = settings.ZoneName;
+                    settingsToUpdate.DateFormat = settings.DateFormat;
+                    settingsToUpdate.TimeFormat = settings.TimeFormat;
+                    settingsToUpdate.Culture = settings.Culture;
+                    _entities.SaveChanges();
+                    result.Value = settingsToUpdate;
+                    result.Succeeded = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Failed to update a settings by id {settings.Id}: {ex.Message}");
+            }
+            return result;
+        }
+
+        public IResult<Setting> GetSettingsById(long id)
+        {
+            var result = new Result<Setting>();
+            try
+            {
+                result.Value = _entities.Settings.Where(s => s.Id == id).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Failed to get settings by id {id}: {ex.Message}");
             }
             return result;
         }
