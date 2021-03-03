@@ -97,7 +97,7 @@
                     error: function (xhr) {
                         bootbox.alert({
                             title: "@localizer["Error: "]" + xhr.status,
-                            message: getErrorMessage(xhr)
+                            message: xhr.responseText
                        });
                     }
                 })

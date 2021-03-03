@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MemoApp.Common.Message;
 using MemoApp.Data;
 using MemoApp.Helper;
 using MemoApp.Services;
@@ -6,7 +7,6 @@ using MemoApp.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Localization;
 using Serilog;
@@ -66,7 +66,7 @@ namespace MemoApp.Controllers
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, Message.NotFound);
             }
         }
 
@@ -95,14 +95,14 @@ namespace MemoApp.Controllers
                     {                        
                         return Json(new { isValid = true, message = _localizer["The memo is saved."] });
                     }
-                    return StatusCode(StatusCodes.Status500InternalServerError);
+                    return StatusCode(StatusCodes.Status500InternalServerError, Message.SomethingWrongError);
                 }
                 return View(memoViewModel);
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, Message.SomethingWrongError);
             }
         }
 
@@ -114,7 +114,7 @@ namespace MemoApp.Controllers
             {
                 if (!id.HasValue)
                 {
-                    return BadRequest();
+                    return BadRequest(Message.BadRequest);
                 }
 
                 var memoModel = new Memo();
@@ -131,15 +131,15 @@ namespace MemoApp.Controllers
                 {
                     var memoViewModel = _mapper.Map<Memo, MemoViewModel>(memoModel);
                     memoViewModel.CreatedAt = _settingsService.ConvertUTCtoLocalDateTimeString(DateTime.Parse(memoViewModel.CreatedAt), user.Id);
-                    memoViewModel.UpdatedAt = _settingsService.ConvertUTCtoLocalDateTimeString(DateTime.Parse(memoViewModel.CreatedAt), user.Id);
+                    memoViewModel.UpdatedAt = memoViewModel.CreatedAt;
                     return View(memoViewModel);
                 }
-                return NotFound();
+                return NotFound(Message.NotFound);
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, Message.SomethingWrongError);
             }
         }
 
@@ -152,7 +152,7 @@ namespace MemoApp.Controllers
             {
                 if (!id.HasValue)
                 {
-                    return BadRequest();
+                    return BadRequest(Message.BadRequest);
                 }
                 var memoModel = _memoService.GetMemoById(id.Value).Value;
                 if (memoModel != null)
@@ -160,12 +160,12 @@ namespace MemoApp.Controllers
                     var viewModel = _mapper.Map<Memo, MemoViewModel>(memoModel);
                     return View(viewModel);
                 }
-                return NotFound();
+                return NotFound(Message.NotFound);
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, Message.SomethingWrongError);
             }
         }
 
@@ -183,14 +183,14 @@ namespace MemoApp.Controllers
                     {                        
                         return Json(new { isValid = true, message = _localizer["The memo is updated."] });
                     }
-                    return StatusCode(StatusCodes.Status500InternalServerError);
+                    return StatusCode(StatusCodes.Status500InternalServerError, Message.SomethingWrongError);
                 }
                 return View(memoViewModel);
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, Message.SomethingWrongError);
             }
         }        
 
@@ -210,18 +210,7 @@ namespace MemoApp.Controllers
             {
                 Log.Error(ex.Message);
             }
-            return StatusCode(StatusCodes.Status500InternalServerError);
-        }
-
-        [AllowAnonymous]
-        [HttpPost]
-        public IActionResult CultureManagement(string culture, string returnUrl)
-        {            
-            Response.Cookies.Append(CookieRequestCultureProvider.DefaultCookieName,
-                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
-                new CookieOptions { Expires = DateTimeOffset.Now.AddDays(30) });            
-
-            return LocalRedirect(returnUrl);
-        }
+            return StatusCode(StatusCodes.Status500InternalServerError, Message.SomethingWrongError);
+        }        
     }
 }

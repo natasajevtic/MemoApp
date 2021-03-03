@@ -1,5 +1,6 @@
 using MemoApp.Data;
 using MemoApp.Models;
+using MemoApp.Resources;
 using MemoApp.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -47,13 +48,21 @@ namespace MemoApp
             services.AddIdentity<IdentityUser, IdentityRole>(options => options.User.RequireUniqueEmail = true)
                 .AddDefaultUI()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddErrorDescriber<ErrorDescriber>()
                 .AddDefaultTokenProviders();
 
             services.Configure<PersonSettingsModel>(Configuration.GetSection("PersonSettings"));
             services.AddScoped<ISettingsService, SettingsService>();
 
             services.AddLocalization(opt => { opt.ResourcesPath = "Resources"; });
-            services.AddMvc().AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix).AddDataAnnotationsLocalization();
+            services.AddMvc().AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix).AddDataAnnotationsLocalization(options =>
+            {
+                options.DataAnnotationLocalizerProvider = (type, factory) =>
+                {
+                    var assemblyName = new AssemblyName(typeof(SharedResource).GetTypeInfo().Assembly.FullName);
+                    return factory.Create("SharedResource", assemblyName.Name);
+                };
+            });
 
             services.Configure<RequestLocalizationOptions>(options =>
             {

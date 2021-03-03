@@ -14,6 +14,7 @@ using AutoMapper;
 using MemoApp.Data;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Localization;
 
 namespace MemoApp.Areas.Identity.Pages.Account.Manage
 {
@@ -24,6 +25,8 @@ namespace MemoApp.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IMemoService _memoService;
         private readonly IMapper _mapper;
+        private readonly List<string> Dates = new List<string>() { "dd.MM.yyyy", "dd-MM-yyyy", "MM/dd/yyyy", "yyyy-MM-dd" };
+        private readonly List<string> Times = new List<string>() { "HH:mm", "HH:mm tt" };
 
         [BindProperty(SupportsGet = true)]
         public PersonSettingsModel Settings { get; set; }
@@ -31,9 +34,7 @@ namespace MemoApp.Areas.Identity.Pages.Account.Manage
         public List<SelectListItem> Cultures { get; set; }
         public List<SelectListItem> DateFormats { get; set; }
         public List<SelectListItem> TimeFormats { get; set; }
-
-        private List<string> Dates = new List<string>() { "dd.MM.yyyy", "dd-MM-yyyy", "MM/dd/yyyy", "yyyy-MM-dd" };
-        private List<string> Times = new List<string>() { "HH:mm", "HH:mm tt" };
+        
         public UserSettingsModel(IOptions<RequestLocalizationOptions> locOptions, ISettingsService serviceSettings, UserManager<IdentityUser> userManager, IMemoService memoService, IMapper mapper)
         {
             _locOptions = locOptions;
@@ -49,28 +50,37 @@ namespace MemoApp.Areas.Identity.Pages.Account.Manage
         public async Task<IActionResult> OnGet()
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
-            Settings = _serviceSettings.GetPersonSetting(user.Id);
-            return Page();
+            if (user != null)
+            {
+                Settings = _serviceSettings.GetPersonSetting(user.Id);
+                return Page();
+            }
+            return NotFound();
         }
 
         public async Task<IActionResult> OnPost()
         {
-            var model = _mapper.Map<PersonSettingsModel, Setting>(Settings);
-            if (Settings.Id > 0)
-            {                
-                _memoService.UpdateSettings(model);
-            }
-            else
+            if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByNameAsync(User.Identity.Name);
-                model.UserId = user.Id;
-                _memoService.AddSettings(model);
+                var model = _mapper.Map<PersonSettingsModel, Setting>(Settings);
+                if (Settings.Id > 0)
+                {
+                    _memoService.UpdateSettings(model);
+                }
+                else
+                {
+                    var user = await _userManager.FindByNameAsync(User.Identity.Name);
+                    model.UserId = user.Id;
+                    _memoService.AddSettings(model);
+                }
+
+                Response.Cookies.Append(CookieRequestCultureProvider.DefaultCookieName,
+                    CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(Settings.Culture)),
+                    new CookieOptions { Expires = DateTimeOffset.Now.AddDays(30) });
+
+                return RedirectToAction("Index", "Memo");
             }
-            Response.Cookies.Append(CookieRequestCultureProvider.DefaultCookieName,
-                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(Settings.Culture)),
-                new CookieOptions { Expires = DateTimeOffset.Now.AddDays(30) });
-            
-            return RedirectToAction("Index","Memo");
+            return Page();            
         }
     }
 }

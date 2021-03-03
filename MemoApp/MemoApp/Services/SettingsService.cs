@@ -2,6 +2,7 @@
 using MemoApp.Models;
 using Microsoft.Extensions.Options;
 using System;
+using System.Globalization;
 using System.Linq;
 
 namespace MemoApp.Services
@@ -33,21 +34,21 @@ namespace MemoApp.Services
         {
             var personSettings = GetPersonSetting(personId);
             return TimeZoneInfo.ConvertTimeFromUtc(dateTime, TimeZoneInfo.FindSystemTimeZoneById(personSettings.ZoneName))
-                .ToString(personSettings.DateFormat);
+                .ToString(personSettings.DateFormat, CultureInfo.InvariantCulture);
         }
 
         public string ConvertUTCtoLocalDateTimeString(DateTime dateTime, string personId)
         {
             var personSettings = GetPersonSetting(personId);
             return TimeZoneInfo.ConvertTimeFromUtc(dateTime, TimeZoneInfo.FindSystemTimeZoneById(personSettings.ZoneName))
-                .ToString(string.Join(' ', personSettings.DateFormat, personSettings.TimeFormat));            
+                .ToString(string.Join(' ', personSettings.DateFormat, personSettings.TimeFormat), CultureInfo.InvariantCulture);            
         }
 
         public string ConvertUTCtoLocalTimeString(DateTime dateTime, string personId)
         {
             var personSettings = GetPersonSetting(personId);
             return TimeZoneInfo.ConvertTimeFromUtc(dateTime, TimeZoneInfo.FindSystemTimeZoneById(personSettings.ZoneName))
-                .ToString(personSettings.TimeFormat);           
+                .ToString(personSettings.TimeFormat, CultureInfo.InvariantCulture);           
         }
 
         public PersonSettingsModel GetPersonSetting(string personId)
@@ -59,15 +60,15 @@ namespace MemoApp.Services
                 TimeFormat = _seed.Value.TimeFormat,
                 Culture = _seed.Value.Culture
             };
-            var personSetting = _entities.Settings.Where(s => s.UserId == personId).FirstOrDefault();
-            if (personSetting != null)
+            var personSettings = _entities.Settings.Where(s => s.UserId == personId).FirstOrDefault();
+            if (personSettings != null)
             {
-                model.Id = personSetting.Id;
-                model.UserId = personSetting.UserId;
-                model.ZoneName = personSetting.ZoneName;
-                model.DateFormat = personSetting.DateFormat;
-                model.TimeFormat = personSetting.TimeFormat;
-                model.Culture = personSetting.Culture;
+                model.Id = personSettings.Id;
+                model.UserId = personSettings.UserId;
+                model.ZoneName = personSettings.ZoneName;
+                model.DateFormat = personSettings.DateFormat;
+                model.TimeFormat = personSettings.TimeFormat;
+                model.Culture = personSettings.Culture;
             }
             return model;
         }

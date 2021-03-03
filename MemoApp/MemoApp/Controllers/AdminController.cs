@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MemoApp.Common.Message;
 using MemoApp.Helper;
 using MemoApp.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -51,7 +52,7 @@ namespace MemoApp.Controllers
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, Message.SomethingWrongError);
             }            
         }
 
@@ -78,7 +79,7 @@ namespace MemoApp.Controllers
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, Message.SomethingWrongError);
             }
         }
 
@@ -111,12 +112,12 @@ namespace MemoApp.Controllers
                     }
                     return View(viewModelList);
                 }
-                return NotFound();
+                return NotFound(Message.NotFound);
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, Message.SomethingWrongError);
             }
         }
 
@@ -150,7 +151,7 @@ namespace MemoApp.Controllers
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, Message.SomethingWrongError);
             }
         }
 
@@ -173,12 +174,12 @@ namespace MemoApp.Controllers
                     }
                     return View(viewModel);
                 }
-                return NotFound();
+                return NotFound(Message.NotFound);
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, Message.SomethingWrongError);
             }
         }
 
