@@ -2,10 +2,11 @@
 {
     public static class Message
     {
+        public static string CannotDeleteRole = "The role cannot be deleted. There are users in this role.";
         public static string BadRequest = "Bad request. Please check requested URL.";
-        public static string NotFound = "This resource was not found.";
+        public static string NotFound = "Not found.";
         public static string RegisteredSuccessfully = "Registered successfully. Check your email to confirm registration.";
-        public static string SomethingWrongError = "Something went wrong.";
+        public static string SomethingWrongError = "Sorry, something went wrong. Please try later.";
         public static string NotEnough = "You do not have sufficient funds for this transaction!";
         public static string AreNotCorrect = "are not correct!";
         public static string IsNotCorrect = "is not correct!";
@@ -21,7 +22,7 @@
         public static string ArticleNotExist = "Article does not exist!";
         public static string NotEnoughPoints = "Not enough points.";
         public static string OrderedSuccessfully = "Ordered successfully.";
-        public static string AddedSuccessfully = "Added Successfully.";
+        public static string AddedSuccessfully = "Added successfully.";
         public static string UpdatedSuccessfully = "Updated successfully.";
         public static string DeletedSuccessfully = "Deleted successfully.";
         public static string ArticleDoesntBelongToCardType = "Article doesn't belong to this card type.";

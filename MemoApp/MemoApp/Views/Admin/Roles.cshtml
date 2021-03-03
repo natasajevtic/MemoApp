@@ -82,7 +82,7 @@
         callback: function (result) {
             if (result) {
                 $.ajax({
-                    type: "POST",
+                    type: "POST",                    
                     url: '@Url.Action("DeleteRole","Admin")/' + id,
                     success: function (data) {
                         if (data.success) {
@@ -95,9 +95,10 @@
                         }
                     },
                     error: function (xhr) {
-                        bootbox.alert({
+                        var r = jQuery.parseJSON(xhr.responseText);
+                        bootbox.alert({                            
                             title: "@localizer["Error: "]" + xhr.status,
-                            message: xhr.responseText
+                            message: r.value
                        });
                     }
                 })

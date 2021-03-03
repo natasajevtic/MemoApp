@@ -117,13 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="The memo is deleted." xml:space="preserve">
-    <value>Beleška je izbrisana.</value>
+  <data name="Added successfully." xml:space="preserve">
+    <value>Uspešno sačuvano.</value>
   </data>
-  <data name="The memo is saved." xml:space="preserve">
-    <value>Beleška je sačuvana.</value>
+  <data name="Bad request. Please check requested URL." xml:space="preserve">
+    <value>Loš zahtev. Proverite zahtevani URL.</value>
   </data>
-  <data name="The memo is updated." xml:space="preserve">
-    <value>Beleška je izmenjena.</value>
+  <data name="Deleted successfully." xml:space="preserve">
+    <value>Uspešno izbrisano.</value>
+  </data>
+  <data name="Not found." xml:space="preserve">
+    <value>Nije pronađeno.</value>
+  </data>
+  <data name="Sorry, something went wrong. Please try later." xml:space="preserve">
+    <value>Izvinite, nešto nije u redu. Pokušajte kasnije.</value>
+  </data>
+  <data name="Updated successfully." xml:space="preserve">
+    <value>Uspešno izmenjeno.</value>
   </data>
 </root>

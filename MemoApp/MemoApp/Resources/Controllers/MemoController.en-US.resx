@@ -117,13 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="The memo is deleted." xml:space="preserve">
-    <value>The memo is deleted.</value>
+  <data name="Added successfully." xml:space="preserve">
+    <value>Added successfully.</value>
   </data>
-  <data name="The memo is saved." xml:space="preserve">
-    <value>The memo is saved.</value>
+  <data name="Bad request. Please check requested URL." xml:space="preserve">
+    <value>Bad request. Please check requested URL.</value>
   </data>
-  <data name="The memo is updated." xml:space="preserve">
-    <value>The memo is updated.</value>
+  <data name="Deleted successfully." xml:space="preserve">
+    <value>Deleted successfully.</value>
+  </data>
+  <data name="Not found." xml:space="preserve">
+    <value>Not found.</value>
+  </data>
+  <data name="Sorry, something went wrong. Please try later." xml:space="preserve">
+    <value>Sorry, something went wrong. Please try later.</value>
+  </data>
+  <data name="Updated successfully." xml:space="preserve">
+    <value>Updated successfully.</value>
   </data>
 </root>

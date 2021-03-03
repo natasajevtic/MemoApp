@@ -8,9 +8,10 @@
             $('#modalAdd').modal('show');
         },
         error: function (xhr) {
+            var r = jQuery.parseJSON(xhr.responseText);
             bootbox.alert({
                 title: "Error: " + xhr.status,
-                message: xhr.responseText,
+                message: r.value
             });
         }
     })
@@ -39,9 +40,10 @@ function submitForm(form) {
             },
             error: function (xhr) {
                 $('#modalAdd').modal('hide');
+                var r = jQuery.parseJSON(xhr.responseText);
                 bootbox.alert({
                     title: "Error: " + xhr.status,
-                    message: xhr.responseText,
+                    message: r.value
                 });
             }
         });

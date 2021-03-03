@@ -117,19 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Added successfully." xml:space="preserve">
+    <value>Uspešno dodato.</value>
+  </data>
+  <data name="Deleted successfully." xml:space="preserve">
+    <value>Uspešno izbrisano.</value>
+  </data>
+  <data name="Not found." xml:space="preserve">
+    <value>Nije pronađeno.</value>
+  </data>
+  <data name="Sorry, something went wrong. Please try later." xml:space="preserve">
+    <value>Izvinite, nešto nije u redu. Pokušajte kasnije.</value>
+  </data>
   <data name="The role cannot be deleted. There are users in this role." xml:space="preserve">
     <value>Uloga ne može biti obrisana. Postoje korisnici sa ovom ulogom.</value>
   </data>
-  <data name="The role is changed." xml:space="preserve">
-    <value>Uloga je izmenjena.</value>
-  </data>
-  <data name="The role is created." xml:space="preserve">
-    <value>Uloga je kreirana.</value>
-  </data>
-  <data name="The role is deleted." xml:space="preserve">
-    <value>Uloga je izbrisana.</value>
-  </data>
-  <data name="The role is updated." xml:space="preserve">
-    <value>Uloga je izmenjena.</value>
+  <data name="Updated successfully." xml:space="preserve">
+    <value>Uspešno izmenjeno.</value>
   </data>
 </root>
