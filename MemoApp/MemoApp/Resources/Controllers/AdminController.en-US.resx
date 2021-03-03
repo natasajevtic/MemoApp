@@ -117,19 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Added successfully." xml:space="preserve">
+    <value>Added successfully.</value>
+  </data>
+  <data name="Deleted successfully." xml:space="preserve">
+    <value>Deleted successfully.</value>
+  </data>
+  <data name="Not found." xml:space="preserve">
+    <value>Not found.</value>
+  </data>
+  <data name="Sorry, something went wrong. Please try later." xml:space="preserve">
+    <value>Sorry, something went wrong. Please try later.</value>
+  </data>
   <data name="The role cannot be deleted. There are users in this role." xml:space="preserve">
     <value>The role cannot be deleted. There are users in this role.</value>
   </data>
-  <data name="The role is changed." xml:space="preserve">
-    <value>The role is changed.</value>
-  </data>
-  <data name="The role is created." xml:space="preserve">
-    <value>The role is created.</value>
-  </data>
-  <data name="The role is deleted." xml:space="preserve">
-    <value>The role is deleted.</value>
-  </data>
-  <data name="The role is updated." xml:space="preserve">
-    <value>The role is updated.</value>
+  <data name="Updated successfully." xml:space="preserve">
+    <value>Updated successfully.</value>
   </data>
 </root>

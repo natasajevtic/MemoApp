@@ -123,4 +123,19 @@
   <data name="Role name {0} is already taken." xml:space="preserve">
     <value>Role name {0} is already taken.</value>
   </data>
+  <data name="String1The Name must be less than 256 characters long." xml:space="preserve">
+    <value>The Name must be less than 256 characters long.</value>
+  </data>
+  <data name="Tag length must be less than 50." xml:space="preserve">
+    <value>Tag length must be less than 50.</value>
+  </data>
+  <data name="The Name field is required." xml:space="preserve">
+    <value>The Name field is required.</value>
+  </data>
+  <data name="The Title field is required." xml:space="preserve">
+    <value>The Title field is required.</value>
+  </data>
+  <data name="The Title must be less than 50 characters long." xml:space="preserve">
+    <value>The Title must be less than 50 characters long.</value>
+  </data>
 </root>

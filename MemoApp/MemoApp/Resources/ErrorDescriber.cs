@@ -28,6 +28,5 @@ namespace MemoApp.Resources
                 Description = string.Format(_localizer["Role name {0} is already taken."], role)
             };
         }
-
     }
 }

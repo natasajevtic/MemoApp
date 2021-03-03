@@ -118,9 +118,24 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Email {0} is already taken." xml:space="preserve">
-    <value>E-mail adresa {0} je zauzet.</value>
+    <value>E-mail adresa {0} je već zauzeta.</value>
   </data>
   <data name="Role name {0} is already taken." xml:space="preserve">
-    <value>Naziv role {0} je zauzet.</value>
+    <value>Naziv uloge {0} je već zauzet.</value>
+  </data>
+  <data name="Tag length must be less than 50." xml:space="preserve">
+    <value>Dužina taga mora biti manja od 50 znakova.</value>
+  </data>
+  <data name="The Name field is required." xml:space="preserve">
+    <value>Polje Naziv je obavezno.</value>
+  </data>
+  <data name="The Name must be less than 256 characters long." xml:space="preserve">
+    <value>Naziv mora da bude kraći od 256 znakova.</value>
+  </data>
+  <data name="The Title field is required." xml:space="preserve">
+    <value>Polje Naslov je obavezno.</value>
+  </data>
+  <data name="The Title must be less than 50 characters long." xml:space="preserve">
+    <value>Naslov mora da bude kraći od 50 znakova.</value>
   </data>
 </root>
