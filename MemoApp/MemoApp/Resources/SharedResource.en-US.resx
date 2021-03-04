@@ -123,6 +123,9 @@
   <data name="Email {0} is already taken." xml:space="preserve">
     <value>Email {0} is already taken.</value>
   </data>
+  <data name="Invalid login attempt." xml:space="preserve">
+    <value>Invalid login attempt.</value>
+  </data>
   <data name="Passwords must have at least one digit ('0'-'9')." xml:space="preserve">
     <value>Passwords must have at least one digit ('0'-'9').</value>
   </data>

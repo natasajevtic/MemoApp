@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Localization;
 using MemoApp.Services;
 using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
+using Microsoft.Extensions.Localization;
 
 namespace MemoApp.Areas.Identity.Pages.Account
 {
@@ -20,16 +20,18 @@ namespace MemoApp.Areas.Identity.Pages.Account
     public class LoginModel : PageModel
     {
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly ISettingsService settingsService;
+        private readonly ISettingsService _settingsService;
+        private readonly IStringLocalizer<SharedResource> _localizer;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
 
         public LoginModel(SignInManager<IdentityUser> signInManager, 
             ILogger<LoginModel> logger,
-            UserManager<IdentityUser> userManager, ISettingsService settingsService)
+            UserManager<IdentityUser> userManager, ISettingsService settingsService, IStringLocalizer<SharedResource> localizer)
         {
             _userManager = userManager;
-            this.settingsService = settingsService;
+            _settingsService = settingsService;
+            _localizer = localizer;
             _signInManager = signInManager;
             _logger = logger;
         }
@@ -46,15 +48,14 @@ namespace MemoApp.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "The Email field is required.")]
+            [EmailAddress(ErrorMessage = "The Email field is not a valid e - mail address.")]
             public string Email { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "The Password field is required.")]
             [DataType(DataType.Password)]
             public string Password { get; set; }
-
-            [Display(Name = "Remember me?")]
+            
             public bool RememberMe { get; set; }
         }
 
@@ -91,7 +92,7 @@ namespace MemoApp.Areas.Identity.Pages.Account
                     _logger.LogInformation("User logged in.");
 
                     var user =  await _userManager.FindByEmailAsync(Input.Email);
-                    var personSettings = settingsService.GetPersonSetting(user.Id);
+                    var personSettings = _settingsService.GetPersonSetting(user.Id);
                     Response.Cookies.Append(CookieRequestCultureProvider.DefaultCookieName,
                     CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(personSettings.Culture)),
                     new CookieOptions { Expires = DateTimeOffset.Now.AddDays(30) });
@@ -109,7 +110,7 @@ namespace MemoApp.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, _localizer["Invalid login attempt."]);
                     return Page();
                 }
             }
