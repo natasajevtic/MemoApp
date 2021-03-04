@@ -1,6 +1,7 @@
 ﻿@inject IViewLocalizer localizer 
 @{
     ViewData["Title"] = localizer["Users"];
+    var culture = Context.Features.Get<Microsoft.AspNetCore.Localization.IRequestCultureFeature>().RequestCulture.Culture.Name;
 }
 <h1>@localizer["Users"]</h1>
 <hr />
@@ -39,6 +40,8 @@
     <script src="~/lib/bootbox/bootbox.min.js"></script>
     <script>
         var datatable;
+        var serbianCulture = '@culture' == 'sr' ? '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Serbian.json' : '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/English.json';
+
         $(document).ready(function () {
             datatable = $('#userTable').DataTable({
                 "ajax": {
@@ -61,7 +64,10 @@
                                 data + "','@localizer["Edit"]')><i class='fa fa-edit'></i> @localizer["Change role"]</button>"
                         }
                     }
-                ]
+                ],
+                language: {
+                    url: serbianCulture
+                }
             })
         })
     </script>
