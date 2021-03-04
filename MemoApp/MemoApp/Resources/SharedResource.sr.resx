@@ -162,13 +162,22 @@
   <data name="The Password must be at least {2} and at max {1} characters long." xml:space="preserve">
     <value>Lozinka mora imati najmanje {2}, a najviše {1} znakova.</value>
   </data>
+  <data name="The Phone number field is not a valid phone number." xml:space="preserve">
+    <value>Polje Broj telefona nije validan broj telefona.</value>
+  </data>
   <data name="The Title field is required." xml:space="preserve">
     <value>Polje Naslov je obavezno.</value>
   </data>
   <data name="The Title must be less than 50 characters long." xml:space="preserve">
     <value>Naslov mora da bude kraći od 50 znakova.</value>
   </data>
+  <data name="Unexpected error when trying to set phone number." xml:space="preserve">
+    <value>Dogodila se neočekivana greška prilikom podešavanja broja telefona.</value>
+  </data>
   <data name="Username {0} is already taken." xml:space="preserve">
     <value>Username {0} je već zauzet.</value>
+  </data>
+  <data name="Your profile has been updated." xml:space="preserve">
+    <value>Vaš profil je ažuriran.</value>
   </data>
 </root>
