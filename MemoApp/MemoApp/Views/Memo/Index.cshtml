@@ -1,8 +1,10 @@
-﻿@model List<MemoViewModel>
+﻿@inject IViewLocalizer localizer
+@model List<MemoViewModel>
 @{
-    ViewData["Title"] = "Memos";
+    ViewData["Title"] = localizer["Memos"];
+    var culture = Context.Features.Get<Microsoft.AspNetCore.Localization.IRequestCultureFeature>().RequestCulture.Culture.Name;
 }
-<h1>Memos</h1>
+<h1>@localizer["Memos"]</h1>
 <hr />
 <div class="modal" role="dialog" id="modalAdd">
     <div class="modal-dialog modal-lg">
@@ -18,19 +20,19 @@
     </div>
 </div>
 
-<button class="btn btn-success btn-lg" onclick="showPopupForm('@Url.Action("Create","Memo")', 'Add memo')">
-    <i class="fa fa-plus"></i> Add new
+<button class="btn btn-success btn-lg" onclick="showPopupForm('@Url.Action("Create","Memo")', '@localizer["Add"]')">
+    <i class="fa fa-plus"></i> @localizer["Add"]
 </button>
 
 <table class="table table-light table-bordered table-hover table-striped" id="memoTable">
     <thead>
         <tr>
             <th class="row-id">Id</th>
-            <th>User</th>
-            <th>Title</th>
-            <th>Note</th>
-            <th>Tags</th>
-            <th>Created at</th>
+            <th>@localizer["User"]</th>
+            <th>@localizer["Title"]</th>
+            <th>@localizer["Note"]</th>
+            <th>@localizer["Tags"]</th>
+            <th>@localizer["Created at"]</th>
             <th></th>
         </tr>
     </thead>
@@ -43,10 +45,10 @@
     <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.23/js/dataTables.bootstrap4.min.js"></script>
     <script src="~/lib/bootbox/bootbox.min.js"></script>
-    <script src="~/lib/moment/moment.min.js"></script>
     <script>
         var datatable;
         var role = @(User.IsInRole("Admin")? "true":"false");
+        var serbianCulture = '@culture' == 'sr' ? '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Serbian.json' : '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/English.json';
 
         $(document).ready(function () {
             datatable = $('#memoTable').DataTable({
@@ -71,35 +73,42 @@
                             return text;
                         }
                     },
-                    {
-                        "data": "createdAt", "render": function (data) {
-                            return moment(data).format("MM/DD/YYYY HH:mm:ss");
-                        }
-                    },
+                    {"data": "createdAt"},
                     {
                         "data": "id", "render": function (data) {
                             if (role) {
                                 return "<div class='btn-group-vertical'>" +
                                     "<button class='btn btn-light' onclick=showPopupForm('@Url.Action("Details","Memo")/" +
-                                    data + "','Details')><i class='fa fa-search-plus'></i> Details</button>" +
+                                    data + "','@localizer["Details"]')><i class='fa fa-search-plus'></i> @localizer["Details"]</button>" +
                                     "<button class='btn btn-warning' onclick=showPopupForm('@Url.Action("Edit","Memo")/" +
-                                    data + "','Edit')><i class='fa fa-edit'></i> Edit</button>" +
-                                    "<button class='btn btn-danger' onclick=deleteMemo(" + data + ")><i class='fa fa-trash'></i> Delete</button><div>";
+                                    data + "','@localizer["Edit"]')><i class='fa fa-edit'></i> @localizer["Edit"]</button>" +
+                                    "<button class='btn btn-danger' onclick=deleteMemo(" + data + ")><i class='fa fa-trash'></i> @localizer["Delete"]</button><div>";
                             }
                             else {
                                 return "<button class='btn btn-light' onclick=showPopupForm('@Url.Action("Details","Memo")/" +
-                                    data + "','Details')><i class='fa fa-search-plus'></i> Details</button>";
+                                    data + "','@localizer["Details"]')><i class='fa fa-search-plus'></i> @localizer["Details"]</button>";
                             }
                         }
                     }
-                ]
+                ],
+                language: {
+                    url: serbianCulture
+                }
             })
         })
 
         function deleteMemo(id) {
         bootbox.confirm({
-        title: "Confirmation",
-        message: "Are you sure you want to delete this memo?",
+        title: "@localizer["Confirmation"]",
+        message: "@localizer["Are you sure you want to delete this memo?"]",
+        buttons: {
+                confirm: {
+                    label: '@localizer["Yes"]',
+                },
+                cancel: {
+                    label: '@localizer["No"]',
+                }
+            },
         callback: function (result) {
             if (result) {
                 $.ajax({
@@ -109,16 +118,17 @@
                         if (data.success) {
                             bootbox.alert(
                                 {
-                                    title: "Notification",
-                                    message: data.message
+                                    title: "@localizer["Notification"]",
+                                    message: data.message.value,
                                 });
                             datatable.ajax.reload();
                         }
                     },
                     error: function (xhr) {
+                        var r = jQuery.parseJSON(xhr.responseText);
                         bootbox.alert({
-                            title: "Error: " + xhr.status,
-                            message: getErrorMessage(xhr)
+                            title: "@localizer["Error: "]" + xhr.status,
+                            message: r.value
                         });
                     }
                 })

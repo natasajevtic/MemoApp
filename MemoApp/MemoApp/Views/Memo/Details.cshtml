@@ -1,4 +1,5 @@
-﻿@model MemoViewModel
+﻿@inject IViewLocalizer localizer
+@model MemoViewModel
 @{
     Layout = null;
 }
@@ -8,25 +9,25 @@
         <div class="row">
             <div class="col-md-6">                
                 <div class="form-group">
-                    <label asp-for="UserId">User id</label>
+                    <label asp-for="UserId">@localizer["User id"]</label>
                     <input asp-for="UserId" class="form-control" />
                 </div>
                 <div class="form-group">
-                    <label asp-for="Title">Title</label>
+                    <label asp-for="Title">@localizer["Title"]</label>
                     <input asp-for="Title" class="form-control" />
                 </div>
                 <div class="form-group">
-                    <label asp-for="Note">Note</label>
+                    <label asp-for="Note">@localizer["Note"]</label>
                     <textarea asp-for="Note" class="form-control" rows="4"></textarea>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label asp-for="CreatedAt">Created at</label>
+                    <label asp-for="CreatedAt">@localizer["Created at"]</label>
                     <input asp-for="CreatedAt" class="form-control" />
                 </div>
                 <div class="form-group">
-                    <label asp-for="UpdatedAt">Updated at</label>
+                    <label asp-for="UpdatedAt">@localizer["Updated at"]</label>
                     <input asp-for="UpdatedAt" class="form-control" />
                 </div>
                 <div class="form-group">
@@ -34,7 +35,7 @@
                     <input asp-for="Status.Name" class="form-control" />
                 </div>
                 <div class="form-group">
-                    <label asp-for="Tags">Tags</label>
+                    <label asp-for="Tags">@localizer["Tags"]</label>
                     <ul asp-for="Tags" class="list-inline">
                         @foreach (var tag in Model.Tags)
                         {
@@ -45,5 +46,5 @@
             </div>
         </div>
     </fieldset>
-    <button data-dismiss="modal" class="btn btn-primary"><i class="fa fa-list"></i> Back to memos</button>
+    <button data-dismiss="modal" class="btn btn-primary"><i class="fa fa-list"></i> @localizer["Back to memos"]</button>
 </form>

@@ -1,7 +1,9 @@
-﻿@{
-    ViewData["Title"] = "Users";
+﻿@inject IViewLocalizer localizer 
+@{
+    ViewData["Title"] = localizer["Users"];
+    var culture = Context.Features.Get<Microsoft.AspNetCore.Localization.IRequestCultureFeature>().RequestCulture.Culture.Name;
 }
-<h1>Users</h1>
+<h1>@localizer["Users"]</h1>
 <hr />
 
 <div class="modal" role="dialog" id="modalAdd">
@@ -21,9 +23,9 @@
 <table class="table table-light table-bordered table-hover table-striped" id="userTable">
     <thead>
         <tr>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Role</th>
+            <th>@localizer["Username"]</th>
+            <th>@localizer["Email"]</th>
+            <th>@localizer["Role"]</th>
             <th></th>
         </tr>
     </thead>
@@ -38,6 +40,8 @@
     <script src="~/lib/bootbox/bootbox.min.js"></script>
     <script>
         var datatable;
+        var serbianCulture = '@culture' == 'sr' ? '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Serbian.json' : '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/English.json';
+
         $(document).ready(function () {
             datatable = $('#userTable').DataTable({
                 "ajax": {
@@ -57,10 +61,13 @@
                     {
                         "data": "userId", "render": function (data) {
                             return "<button class='btn btn-warning' onclick=showPopupForm('@Url.Action("EditUserRole","Admin")/" +
-                                data + "','Edit')><i class='fa fa-edit'></i> Change role</button>"
+                                data + "','@localizer["Edit"]')><i class='fa fa-edit'></i> @localizer["Change role"]</button>"
                         }
                     }
-                ]
+                ],
+                language: {
+                    url: serbianCulture
+                }
             })
         })
     </script>

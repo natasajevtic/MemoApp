@@ -1,139 +1,98 @@
-﻿using System.Collections.Generic;
-
-namespace MemoApp.Common
+﻿namespace MemoApp.Common.Message
 {
     public static class Message
     {
-        public static List<ErrorResult> InternalServerError = new List<ErrorResult>
-        {
-            new ErrorResult
-            {
-                ErrorCode = "Internal server error",
-                ErrorDescription = "Internal server error."
-            }
-        };
-        public static List<ErrorResult> ListOfLocationsIsEmpty = new List<ErrorResult>
-        {
-            new ErrorResult
-            {
-                ErrorCode = "ListOfLocationsIsEmpty",
-                ErrorDescription = "List of locations is empty."
-            }
-        };
-        public static List<ErrorResult> SessionAlreadyActive = new List<ErrorResult>
-        {
-            new ErrorResult
-            {
-                ErrorCode = "SessionAlreadyActive",
-                ErrorDescription = "User already has active session."
-            }
-        };
-        public static List<ErrorResult> SessionNotActive = new List<ErrorResult>
-        {
-            new ErrorResult
-            {
-                ErrorCode = "SessionNotActive",
-                ErrorDescription = "This session is already stopped."
-            }
-        };
-        public static List<ErrorResult> SessionDoesntExist = new List<ErrorResult>
-        {
-            new ErrorResult
-            {
-                ErrorCode = "SessionDoesntExist",
-                ErrorDescription = "This session does not exist."
-            }
-        };
-        public static List<ErrorResult> SessionDoesntBelongToUser = new List<ErrorResult>
-        {
-            new ErrorResult
-            {
-                ErrorCode = "SessionDoesntBelongToUser",
-                ErrorDescription = "This session doesn't belong to this user."
-            }
-        };
-        public static List<ErrorResult> StopMustBeGreaterThanStart = new List<ErrorResult>
-        {
-            new ErrorResult
-            {
-                ErrorCode = "StopMustBeGreaterThanStart",
-                ErrorDescription = "Stop must be greater than start."
-            }
-        };
-        public static List<ErrorResult> AlreadyDeclaredAsPositive = new List<ErrorResult>
-        {
-            new ErrorResult
-            {
-                ErrorCode = "AlreadyDeclaredAsPositive",
-                ErrorDescription = "This user has been already declared as positive."
-            }
-        };
-        public static List<ErrorResult> AccountLockedOut = new List<ErrorResult>
-        {
-            new ErrorResult
-            {
-                ErrorCode = "AccountLockedOut",
-                ErrorDescription = "Account locked out."
-            }
-        };
-        public static List<ErrorResult> InvalidAttempt = new List<ErrorResult>
-        {
-            new ErrorResult
-            {
-                ErrorCode = "InvalidAttempt",
-                ErrorDescription = "Invalid attempt."
-            }
-        };
-        public static List<ErrorResult> InvalidJSON = new List<ErrorResult>
-        {
-            new ErrorResult
-            {
-                ErrorCode = "InvalidJSON",
-                ErrorDescription = "Invalid number of elements in JSON request"
-            }
-        };
-        public static List<ErrorResult> ConfirmationCodeDoesntExist = new List<ErrorResult>
-        {
-            new ErrorResult
-            {
-                ErrorCode = "ConfirmationCodeDoesntExist",
-                ErrorDescription = "Confirmation code does not exist in our system."
-            }
-        };
+        public static string CannotDeleteRole = "The role cannot be deleted. There are users in this role.";
+        public static string BadRequest = "Bad request. Please check requested URL.";
+        public static string NotFound = "Not found.";
+        public static string RegisteredSuccessfully = "Registered successfully. Check your email to confirm registration.";
+        public static string SomethingWrongError = "Sorry, something went wrong. Please try later.";
+        public static string NotEnough = "You do not have sufficient funds for this transaction!";
+        public static string AreNotCorrect = "are not correct!";
+        public static string IsNotCorrect = "is not correct!";
+        public static string NotExist = "Does not exist!";
+        public static string AlreadyExist = "already exist!";
+        public static string CollectedSuccessfully = "You have successfully collected new points.";
+        public static string NotOnLocation = "You are not on required location.";
+        public static string InactiveEvent = "This event is not active.";
+        public static string AlreadyCollected = "You have already collected points for this event.";
+        public static string HasNotStarted = "This event has not started yet.";
+        public static string CardTypeNotExist = "CardType does not exist!";
+        public static string CardNotExist = "Card does not exist!";
+        public static string ArticleNotExist = "Article does not exist!";
+        public static string NotEnoughPoints = "Not enough points.";
+        public static string OrderedSuccessfully = "Ordered successfully.";
+        public static string AddedSuccessfully = "Added successfully.";
+        public static string UpdatedSuccessfully = "Updated successfully.";
+        public static string DeletedSuccessfully = "Deleted successfully.";
+        public static string ArticleDoesntBelongToCardType = "Article doesn't belong to this card type.";
+        public static string InsufficentStock = "Insufficent stock.";
+        public static string UserNotFound = "User does not exist.";
+        public static string CardTypeNotInUse = "This Card Type is no longer in use";
+        public static string CardDoesntBelongToUser = "Choosen card doesn't belong to this user.";
+        public static string TerminalTypeDoesNotExist = "Choosen terminal type doesn't exist.";
+        public static string LinkNotValid = "This link is not valid anymore.";
+        public static string ActivatedSuccessfully = "Activated successfully.";
+        public static string PasswordChangedSuccessfully = "Password changed successfully!";
+        public static string PasswordChangeFailed = "Failed to change password!";
+        public static string AlreadyActive = "This user is already active!";
+        public static string MessageSentSuccessfully = "Message(s) sent successfully!";
+        public static string TerminalExceeded = "Terminals limit reached.Terminal cannot be activated.";
+        public static string UnableToAddRoles = "Unable to add roles.";
+        public static string EventNotFound = "Event not found.";
+        public static string ListOfLocationsIsEmpty = "List of locations is empty.";
+        public static string CancelledSuccessfully = "Cancelled successfully.";
+        public static string ArticleOrderDoesntBelongToUser = "Article order doesn't belong to this user.";
+        public static string ArticleNotFound = "Article not found.";
+        public static string MinimumQuantity = "Order at least one article.";
+        public static string ArticleOrderNotFound = "Article order not found.";
+        public static string PointRatioNotDefined = "Point Ratio not defined.";
+        public static string Unauthorized = "Unauthorized.";
+        public static string AlreadyRegisteredContacts = "All contacts are already registered. SMS sending is not possible";
+        public static string UnableToSendSMS = "Unable to send sms.";
+        public static string ArticleAlreadyDelivered = "Article already delivered";
+        public static string NotTimeYet = "It's not time yet.";
+        public static string TimeHasExpired = "The time has expired.";
+        public static string CardTypeDeleted = "Card Type Deleted";
+        public static string CardsCountryNotAvailable = "Cards Country Not Available";
+        public static string CardTypeNotInCountry = "Card Type Not Available For Country";
+        public static string InvalidFile = "Invalid file";
+        public static string AlreadyActivated = "Already Activated";
+        public static string TicketNotExist = "Ticket with this code does not exist";
+        public static string MissingRequiredFlag = "Article does not have the required flag";
+        public static string UserDoesntHaveSupposedCard = "User does not have required card type.";
+        public static string TicketDoesntBelongToUser = "Ticket doesn't belong to this user.";
+        public static string SharingNotPossible = "Sharing is not possible.";
+        public static string TicketAlreadyUsed = "This ticket has been used already.";
+        public static string CardTypeDoesntBelongToTerminal = "This card type doesn't belong to this terminal!";
+        public static string ThereIsNoActiveEffect = "There is no active effect!";
+        public static string RunOutOfSwipes = "You don't have any swipes left. Please buy to continue.";
+        public static string AlreadyMatched = "Already have match with this user.";
+        public static string InvalidToken = "Invalid token";
+        public static string ToMustBeGreaterThanFrom = "Check-out must be greater than Check-in.";
+        public static string CheckInCannotBeInPast = "Check-in date can not be in past.";
+        public static string ArticleNotAvailable = "Article is not available for selected date.";
+        public static string QuantityNotMatch = "The number of days does not match the specified quantity.";
+        public static string CanNotCancelReservation = "Cancellation is no longer available for this reservation.";
+        public static string ReservedSuccessfully = "Reserved successfully.";
+        public static string ReservationDateNotDefined = "Check-in and Check-out not defined.";
+        public static string CantDeleteSeminar = "This seminar can not be deleted.";
+        public static string AttendersNumberMustBeGreaterThanOrdered = "Number of seats must be greater or equal than number of confirmed attenders.";
+        public static string CanNotRemoveLoopOffer = "Offer can not be removed.";
+        public static string RemovedSuccessfully = "Removed successfully.";
+        public static string LoopOfferNotFound = "Offer does not exist.";
+        public static string LoopOfferHasAlreadyStarted = "This offer has already been started.";
+        public static string LoopOfferHasAlreadyOrdered = "This offer has already been ordered.";
+        public static string ConsultantAlreadyScheduled = "Consultant has already scheduled the chosen time.";
+        public static string LoopOfferUpdatedSuccessfully = "Offer updated successfully.";
+        public static string NewOfferAddedSuccessfully = "New offer added successfully.";
+        public static string NoMoreSeats = "All seats are already reserved.";
+        public static string SeminarOrderNotFound = "Seminar order not found.";
+        public static string CantDeleteService = "This service can not be deleted.";
+        public static string LoopOrderNotFound = "Loop order not found.";
+        public static string CanNotRemoveDocument = "Document can not be removed.";
+        public static string DocumentUploaded = "Document uploaded successfully.";
+        public static string DownloadFailed = "Download failed";
 
-        public static List<ErrorResult> NegativeResultOfTest = new List<ErrorResult>
-        {
-            new ErrorResult
-            {
-                ErrorCode = "NegativeResultOfTest",
-                ErrorDescription = "Test result is negative."
-            }
-        };
-
-        public static List<ErrorResult> ResultOfTestDoesntExist = new List<ErrorResult>
-        {
-            new ErrorResult
-            {
-                ErrorCode = "ResultOfTestDoesntExist",
-                ErrorDescription = "Result of test does not exist."
-            }
-        };
-
-        public static List<ErrorResult> ConfirmationCodeAlreadyExists = new List<ErrorResult>
-        {
-            new ErrorResult
-            {
-                ErrorCode = "ConfirmationCodeAlreadyExists",
-                ErrorDescription = "Confirmation Code has been already used."
-            }
-        };
-        public static List<ErrorResult> UnsuccessfulAuthentication = new List<ErrorResult>
-        {
-            new ErrorResult
-            {
-                ErrorCode = "UnsuccessfulAuthentication",
-                ErrorDescription = "Unsuccessful authentication."
-            }
-        };
     }
 }

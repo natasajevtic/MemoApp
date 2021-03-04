@@ -75,10 +75,15 @@ table {
     table td {
         overflow: auto;
     }
-    table td:last-child{
-        text-align:center;
-    }
+
+        table td:last-child {
+            text-align: center;
+        }
 
 .row-id {
     width: 5%
+}
+
+#languageForm {
+    padding: 5px;
 }

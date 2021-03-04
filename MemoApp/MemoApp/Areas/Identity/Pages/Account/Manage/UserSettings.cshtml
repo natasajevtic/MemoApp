@@ -1,0 +1,38 @@
+﻿@page
+@inject IViewLocalizer localizer 
+@model UserSettingsModel
+@{
+    ViewData["Title"] = localizer["Settings"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="col-md-6 offset-md-3">
+    <h1>@localizer["Settings"]</h1>
+    <hr />
+    <form method="post">
+        <input type="hidden" asp-for="Settings.Id" />
+        <input type="hidden" asp-for="Settings.UserId" />
+        <div class="form-group">
+            <label asp-for="Settings.ZoneName">@localizer["Time zone"]</label>
+            <select asp-for="Settings.ZoneName" asp-items="Model.Zones" class="form-control"></select>
+            <span asp-validation-for="Settings.ZoneName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Settings.DateFormat">@localizer["Date format"]</label>
+            <select asp-for="Settings.DateFormat" asp-items="Model.DateFormats" class="form-control"></select>
+            <span asp-validation-for="Settings.DateFormat" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Settings.TimeFormat">@localizer["Time format"]</label>
+            <select asp-for="Settings.TimeFormat" asp-items="Model.TimeFormats" class="form-control"></select>
+            <span asp-validation-for="Settings.TimeFormat" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Settings.Culture">@localizer["Language"]</label>
+            <select asp-for="Settings.Culture" asp-items="Model.Cultures" class="form-control" id="selectedCulture"></select>
+            <span asp-validation-for="Settings.Culture" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-success">@localizer["Save"]</button>
+    </form>
+</div>
+
+<partial name="../Shared/_ValidationScriptsPartial" />

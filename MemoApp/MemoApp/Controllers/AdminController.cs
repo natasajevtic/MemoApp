@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MemoApp.Common.Message;
 using MemoApp.Helper;
 using MemoApp.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -20,12 +22,14 @@ namespace MemoApp.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IMapper _mapper;
+        private readonly IStringLocalizer<AdminController> _localizer;
 
-        public AdminController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper)
+        public AdminController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper, IStringLocalizer<AdminController> localizer)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _mapper = mapper;
+            _localizer = localizer;
         }
         public IActionResult Roles()
         {
@@ -48,15 +52,15 @@ namespace MemoApp.Controllers
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }            
+                return StatusCode(StatusCodes.Status500InternalServerError, _localizer.GetString(Message.SomethingWrongError));
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
             try
-            {                
+            {
                 var users = await _userManager.Users.ToListAsync();
                 var userRolesViewModel = new List<UserRolesViewModel>();
                 foreach (var user in users)
@@ -75,14 +79,14 @@ namespace MemoApp.Controllers
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, _localizer.GetString(Message.SomethingWrongError));
             }
         }
 
         [NoDirectAccess]
         [HttpGet]
         public async Task<IActionResult> EditUserRole(string id)
-        {            
+        {
             try
             {
                 var user = await _userManager.FindByIdAsync(id);
@@ -108,12 +112,12 @@ namespace MemoApp.Controllers
                     }
                     return View(viewModelList);
                 }
-                return NotFound();
+                return NotFound(_localizer.GetString(Message.NotFound));
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, _localizer.GetString(Message.SomethingWrongError));
             }
         }
 
@@ -142,12 +146,12 @@ namespace MemoApp.Controllers
                     }
                     return View(viewModel);
                 }
-                return Json(new { isValid = true, message = "The role is changed!" });
+                return Json(new { isValid = true, message = _localizer.GetString(Message.UpdatedSuccessfully) });
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, _localizer.GetString(Message.SomethingWrongError));
             }
         }
 
@@ -170,12 +174,12 @@ namespace MemoApp.Controllers
                     }
                     return View(viewModel);
                 }
-                return NotFound();
+                return NotFound(_localizer.GetString(Message.NotFound));
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, _localizer.GetString(Message.SomethingWrongError));
             }
         }
 
@@ -190,21 +194,21 @@ namespace MemoApp.Controllers
                     var users = await _userManager.GetUsersInRoleAsync(role.Name);
                     if (users.Any())
                     {
-                        return Json(new { success = true, message = "The role cannot be deleted. There are users in this role." });
+                        return Json(new { success = true, message = _localizer.GetString(Message.CannotDeleteRole) });
                     }
                     var result = await _roleManager.DeleteAsync(role);
                     if (result.Succeeded)
                     {
-                        return Json(new { success = true, message = "The role is deleted!" });
+                        return Json(new { success = true, message = _localizer.GetString(Message.DeletedSuccessfully) });
                     }
-                    return StatusCode(StatusCodes.Status500InternalServerError);
+                    return StatusCode(StatusCodes.Status500InternalServerError, _localizer.GetString(Message.SomethingWrongError));
                 }
-                return NotFound();
+                return NotFound(_localizer.GetString(Message.NotFound));
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, _localizer.GetString(Message.SomethingWrongError));
             }
         }
 
@@ -219,12 +223,12 @@ namespace MemoApp.Controllers
                 {
                     return View(_mapper.Map<IdentityRole, RoleViewModel>(role));
                 }
-                return NotFound();
+                return NotFound(_localizer.GetString(Message.NotFound));
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, _localizer.GetString(Message.SomethingWrongError));
             }
         }
 
@@ -242,7 +246,7 @@ namespace MemoApp.Controllers
                         var result = await _roleManager.UpdateAsync(role);
                         if (result.Succeeded)
                         {
-                            return Json(new { isValid = true, message = "The role is updated!" });
+                            return Json(new { isValid = true, message = _localizer.GetString(Message.UpdatedSuccessfully) });
                         }
                         foreach (var error in result.Errors)
                         {
@@ -250,14 +254,14 @@ namespace MemoApp.Controllers
                         }
                         return View(viewModel);
                     }
-                    return NotFound();
+                    return NotFound(_localizer.GetString(Message.NotFound));
                 }
                 return View(viewModel);
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, _localizer.GetString(Message.SomethingWrongError));
             }
         }
 
@@ -276,11 +280,11 @@ namespace MemoApp.Controllers
             try
             {
                 if (ModelState.IsValid)
-                {                    
+                {
                     var result = await _roleManager.CreateAsync(new IdentityRole(viewModel.Name));
                     if (result.Succeeded)
                     {
-                        return Json(new { isValid = true, message = "The role is created!" });
+                        return Json(new { isValid = true, message = _localizer.GetString(Message.AddedSuccessfully) });
                     }
                     foreach (var error in result.Errors)
                     {
@@ -294,7 +298,7 @@ namespace MemoApp.Controllers
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, _localizer.GetString(Message.SomethingWrongError));
             }
         }
     }

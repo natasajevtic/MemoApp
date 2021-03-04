@@ -1,4 +1,5 @@
-﻿@model MemoViewModel
+﻿@inject IViewLocalizer localizer
+@model MemoViewModel
 @{
     Layout = null;
 }
@@ -6,27 +7,24 @@
 <form method="post" asp-controller="Memo" asp-action="Edit" onsubmit="return submitForm(this)">
     <input asp-for="Id" type="hidden" />
     <div class="form-group">
-        <label asp-for="Title">Title</label>
+        <label asp-for="Title">@localizer["Title"]</label>
         <input asp-for="Title" class="form-control" />
         <span asp-validation-for="Title" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Note">Note</label>
+        <label asp-for="Note">@localizer["Note"]</label>
         <textarea asp-for="Note" class="form-control" rows="5"></textarea>
         <span asp-validation-for="Note" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="TagString">Tags</label>
+        <label asp-for="TagString">@localizer["Tags"]</label>
         <textarea asp-for="TagString" class="form-control" rows="2"></textarea>
         @for (int i = 0; i < Model.Tags.Count; i++)
         {
             <span asp-validation-for="Tags[i].Name" class="text-danger"></span>
         }
     </div>
-    <div class="form-group">
-        <button type="submit" class="btn btn-success">Save</button>
-        <button data-dismiss="modal" class="btn btn-danger">Cancel</button>
-    </div>
+    <partial name="../Shared/_ButtonsPartial" />
 </form>
 
 <partial name="../Shared/_ValidationScriptsPartial" />

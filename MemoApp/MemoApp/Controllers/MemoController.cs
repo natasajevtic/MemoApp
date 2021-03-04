@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MemoApp.Common.Message;
 using MemoApp.Data;
 using MemoApp.Helper;
 using MemoApp.Services;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -20,12 +22,16 @@ namespace MemoApp.Controllers
         private readonly IMemoService _memoService;
         private readonly IMapper _mapper;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IStringLocalizer<MemoController> _localizer;
+        private readonly ISettingsService _settingsService;
 
-        public MemoController(IMemoService memoService, IMapper mapper, UserManager<IdentityUser> userManager)
+        public MemoController(IMemoService memoService, IMapper mapper, UserManager<IdentityUser> userManager, IStringLocalizer<MemoController> localizer, ISettingsService settingsService)
         {
             _memoService = memoService;
             _mapper = mapper;
             _userManager = userManager;
+            _localizer = localizer;
+            _settingsService = settingsService;
         }
 
         public IActionResult Index()
@@ -38,6 +44,7 @@ namespace MemoApp.Controllers
             try
             {
                 var memoModelList = new List<Memo>();
+                var user = await _userManager.FindByNameAsync(User.Identity.Name);
                 //if the user is an admin, getting memos of all users
                 if (User.IsInRole("Admin"))
                 {
@@ -45,16 +52,21 @@ namespace MemoApp.Controllers
                 }
                 //if the user is not admin, getting only his memos
                 else
-                {
-                    var user = await _userManager.FindByNameAsync(User.Identity.Name);
+                {                    
                     memoModelList = _memoService.GetUserMemos(user.Id).Value;
                 }
-                return Json(_mapper.Map<List<Memo>, List<MemoViewModel>>(memoModelList));
+                var memoViewModelList = _mapper.Map<List<Memo>, List<MemoViewModel>>(memoModelList);
+                foreach (var memo in memoViewModelList)
+                {
+                   memo.CreatedAt = _settingsService.ConvertUTCtoLocalDateTimeString(DateTime.Parse(memo.CreatedAt), user.Id);
+                   memo.UpdatedAt = memo.CreatedAt;
+                }
+                return Json(memoViewModelList);
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, _localizer.GetString(Message.SomethingWrongError));
             }
         }
 
@@ -81,16 +93,16 @@ namespace MemoApp.Controllers
                     var memoId = _memoService.AddMemo(memoModel).Value;
                     if (memoId > 0)
                     {                        
-                        return Json(new { isValid = true, message = "The memo is saved!" });
+                        return Json(new { isValid = true, message = _localizer.GetString(Message.AddedSuccessfully) });
                     }
-                    return StatusCode(StatusCodes.Status500InternalServerError);
+                    return StatusCode(StatusCodes.Status500InternalServerError, _localizer.GetString(Message.SomethingWrongError));
                 }
                 return View(memoViewModel);
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, _localizer.GetString(Message.SomethingWrongError));
             }
         }
 
@@ -102,29 +114,32 @@ namespace MemoApp.Controllers
             {
                 if (!id.HasValue)
                 {
-                    return BadRequest();
+                    return BadRequest(_localizer.GetString(Message.BadRequest));
                 }
 
                 var memoModel = new Memo();
+                var user = await _userManager.FindByNameAsync(User.Identity.Name);
                 if (User.IsInRole("Admin"))
                 {
                     memoModel = _memoService.GetMemoById(id.Value).Value;
                 }
                 else
-                {
-                    var user = await _userManager.FindByNameAsync(User.Identity.Name);
+                {                    
                     memoModel = _memoService.GetUserMemoById(user.Id, id.Value).Value;
                 }
                 if (memoModel != null)
                 {
-                    return View(_mapper.Map<Memo, MemoViewModel>(memoModel));
+                    var memoViewModel = _mapper.Map<Memo, MemoViewModel>(memoModel);
+                    memoViewModel.CreatedAt = _settingsService.ConvertUTCtoLocalDateTimeString(DateTime.Parse(memoViewModel.CreatedAt), user.Id);
+                    memoViewModel.UpdatedAt = memoViewModel.CreatedAt;
+                    return View(memoViewModel);
                 }
-                return NotFound();
+                return NotFound(_localizer.GetString(Message.NotFound));
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, _localizer.GetString(Message.SomethingWrongError));
             }
         }
 
@@ -137,7 +152,7 @@ namespace MemoApp.Controllers
             {
                 if (!id.HasValue)
                 {
-                    return BadRequest();
+                    return BadRequest(_localizer.GetString(Message.BadRequest));
                 }
                 var memoModel = _memoService.GetMemoById(id.Value).Value;
                 if (memoModel != null)
@@ -145,12 +160,12 @@ namespace MemoApp.Controllers
                     var viewModel = _mapper.Map<Memo, MemoViewModel>(memoModel);
                     return View(viewModel);
                 }
-                return NotFound();
+                return NotFound(_localizer.GetString(Message.NotFound));
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, _localizer.GetString(Message.SomethingWrongError));
             }
         }
 
@@ -166,16 +181,16 @@ namespace MemoApp.Controllers
                     var updatedModel = _memoService.UpdateMemo(memoModel);
                     if (updatedModel.Succeeded)
                     {                        
-                        return Json(new { isValid = true, message = "The memo is updated!" });
+                        return Json(new { isValid = true, message = _localizer.GetString(Message.UpdatedSuccessfully) });
                     }
-                    return StatusCode(StatusCodes.Status500InternalServerError);
+                    return StatusCode(StatusCodes.Status500InternalServerError, _localizer.GetString(Message.SomethingWrongError));
                 }
                 return View(memoViewModel);
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, _localizer.GetString(Message.SomethingWrongError));
             }
         }        
 
@@ -188,14 +203,14 @@ namespace MemoApp.Controllers
                 var isDeleted = _memoService.DeleteMemo(id);
                 if (isDeleted.Value == true)
                 {
-                    return Json(new { success = true, message = "The memo is deleted." });
+                    return Json(new { success = true, message = _localizer.GetString(Message.DeletedSuccessfully) });
                 }
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
             }
-            return StatusCode(StatusCodes.Status500InternalServerError);
-        }
+            return StatusCode(StatusCodes.Status500InternalServerError, _localizer.GetString(Message.SomethingWrongError));
+        }        
     }
 }
