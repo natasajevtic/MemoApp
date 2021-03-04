@@ -126,6 +126,12 @@
   <data name="Email" xml:space="preserve">
     <value>E-mail adresa</value>
   </data>
+  <data name="Error" xml:space="preserve">
+    <value>Greška</value>
+  </data>
+  <data name="Notification" xml:space="preserve">
+    <value>Obaveštenje</value>
+  </data>
   <data name="Role" xml:space="preserve">
     <value>Uloga</value>
   </data>
