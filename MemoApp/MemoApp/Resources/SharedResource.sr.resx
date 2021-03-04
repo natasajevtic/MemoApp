@@ -120,11 +120,29 @@
   <data name="Email {0} is already taken." xml:space="preserve">
     <value>E-mail adresa {0} je već zauzeta.</value>
   </data>
+  <data name="Passwords must have at least one digit ('0'-'9')." xml:space="preserve">
+    <value>Lozinka mora imati bar jedan broj ('0'-'9').</value>
+  </data>
+  <data name="Passwords must have at least one lowercase ('a'-'z')." xml:space="preserve">
+    <value>Lozinka mora imati bar jedno malo slovo.</value>
+  </data>
+  <data name="Passwords must have at least one non alphanumeric character." xml:space="preserve">
+    <value>Lozinka mora imati bar jedan znak koji nije alfanumerički.</value>
+  </data>
+  <data name="Passwords must have at least one uppercase ('A'-'Z')." xml:space="preserve">
+    <value>Lozinka mora imati bar jedno veliko slovo.</value>
+  </data>
   <data name="Role name {0} is already taken." xml:space="preserve">
     <value>Naziv uloge {0} je već zauzet.</value>
   </data>
   <data name="Tag length must be less than 50." xml:space="preserve">
     <value>Dužina taga mora biti manja od 50 znakova.</value>
+  </data>
+  <data name="The Email field is not a valid e - mail address." xml:space="preserve">
+    <value>Polje E-mail adresa nije validna e-mail adresa.</value>
+  </data>
+  <data name="The Email field is required." xml:space="preserve">
+    <value>Polje E-mail adresa je obavezno.</value>
   </data>
   <data name="The Name field is required." xml:space="preserve">
     <value>Polje Naziv je obavezno.</value>
@@ -132,10 +150,22 @@
   <data name="The Name must be less than 256 characters long." xml:space="preserve">
     <value>Naziv mora da bude kraći od 256 znakova.</value>
   </data>
+  <data name="The password and confirmation password do not match." xml:space="preserve">
+    <value>Lozinka i lozinka za potvrdu se ne podudaraju.</value>
+  </data>
+  <data name="The Password field is required." xml:space="preserve">
+    <value>Polje Lozinka je obavezno.</value>
+  </data>
+  <data name="The Password must be at least {2} and at max {1} characters long." xml:space="preserve">
+    <value>Lozinka mora imati najmanje {2}, a najviše {1} znakova.</value>
+  </data>
   <data name="The Title field is required." xml:space="preserve">
     <value>Polje Naslov je obavezno.</value>
   </data>
   <data name="The Title must be less than 50 characters long." xml:space="preserve">
     <value>Naslov mora da bude kraći od 50 znakova.</value>
+  </data>
+  <data name="Username {0} is already taken." xml:space="preserve">
+    <value>Username {0} je već zauzet.</value>
   </data>
 </root>
